@@ -11,14 +11,14 @@ import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.annotations.SystemService;
 
 @EBean
-public class CurrLocation implements LocationListener {
+public class LocationManagerEx implements LocationListener {
 
     private boolean isGPSEnabled = false;
     private boolean isNetworkEnabled = false;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
-    private static final String TAG = CurrLocation.class.getSimpleName();
+    private static final String TAG = LocationManagerEx.class.getSimpleName();
 
     private Location location;
 

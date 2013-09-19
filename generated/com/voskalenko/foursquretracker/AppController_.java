@@ -9,7 +9,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.view.View;
-import com.voskalenko.foursquretracker.task.ApiClient_;
+import com.voskalenko.foursquretracker.net.ApiClient_;
 
 public final class AppController_
     extends AppController

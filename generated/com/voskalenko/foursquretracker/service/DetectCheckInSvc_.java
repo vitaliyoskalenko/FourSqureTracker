@@ -3,13 +3,13 @@
 //
 
 
-package com.voskalenko.foursquretracker.svc;
+package com.voskalenko.foursquretracker.service;
 
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
-import com.voskalenko.foursquretracker.CurrLocation_;
 import com.voskalenko.foursquretracker.FourSqureTrackerApp_;
+import com.voskalenko.foursquretracker.LocationManagerEx_;
 
 public final class DetectCheckInSvc_
     extends DetectCheckInSvc
@@ -18,8 +18,8 @@ public final class DetectCheckInSvc_
 
     private void init_() {
         locationManager = ((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
+        currLocation = LocationManagerEx_.getInstance_(this);
         trackerApp = FourSqureTrackerApp_.getInstance_(this);
-        currLocation = CurrLocation_.getInstance_(this);
     }
 
     @Override

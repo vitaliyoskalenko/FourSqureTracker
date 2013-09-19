@@ -3,14 +3,13 @@
 //
 
 
-package com.voskalenko.foursquretracker.task;
+package com.voskalenko.foursquretracker.net;
 
 import java.util.HashMap;
-import com.voskalenko.foursquretracker.model.CheckIn;
-import com.voskalenko.foursquretracker.model.CheckInsResp;
-import com.voskalenko.foursquretracker.model.Token;
-import com.voskalenko.foursquretracker.model.User;
-import com.voskalenko.foursquretracker.model.VenuesResp;
+
+import com.voskalenko.foursquretracker.model.*;
+import com.voskalenko.foursquretracker.model.CheckInResponse;
+import com.voskalenko.foursquretracker.service.NetworkService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,22 +41,36 @@ public class NetworkService_
     }
 
     @Override
-    public ResponseEntity<User> getUserProfile(String version) {
+    public VenueResponse getNearestVenues(String token, double longitude, double latitude, int radius, String version) {
         HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("token", token);
+        urlVariables.put("longitude", longitude);
+        urlVariables.put("latitude", latitude);
+        urlVariables.put("radius", radius);
         urlVariables.put("version", version);
         HttpHeaders httpHeaders = new HttpHeaders();
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/v2/users/self?v={version}"), HttpMethod.GET, requestEntity, User.class, urlVariables);
+        return restTemplate.exchange(rootUrl.concat("/v2/venues/search?oauth_token={token}&ll={longitude},{latitude}&intent=browse&radius={radius}&v={version}"), HttpMethod.GET, requestEntity, VenueResponse.class, urlVariables).getBody();
     }
 
     @Override
-    public CheckInsResp getAllCheckIn(String token, String version) {
+    public CheckInsResponse getAllCheckIn(String token, String version) {
         HashMap<String, Object> urlVariables = new HashMap<String, Object>();
         urlVariables.put("token", token);
         urlVariables.put("version", version);
         HttpHeaders httpHeaders = new HttpHeaders();
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/v2/users/self/checkins?oauth_token={token}&v={version}"), HttpMethod.GET, requestEntity, CheckInsResp.class, urlVariables).getBody();
+        return restTemplate.exchange(rootUrl.concat("/v2/users/self/checkins?oauth_token={token}&v={version}"), HttpMethod.GET, requestEntity, CheckInsResponse.class, urlVariables).getBody();
+    }
+
+    @Override
+    public UserResponse getUserProfile(String token, String version) {
+        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
+        urlVariables.put("token", token);
+        urlVariables.put("version", version);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
+        return restTemplate.exchange(rootUrl.concat("/v2/users/self?oauth_token={token}&v={version}"), HttpMethod.GET, requestEntity, UserResponse.class, urlVariables).getBody();
     }
 
     @Override
@@ -73,25 +86,15 @@ public class NetworkService_
     }
 
     @Override
-    public VenuesResp getNearestVenues(String token, double longitude, double latitude, int radius, String version) {
+    public CheckInResponse addCheckIn(String token, String venueId, String shout, String version) {
         HashMap<String, Object> urlVariables = new HashMap<String, Object>();
         urlVariables.put("token", token);
-        urlVariables.put("longitude", longitude);
-        urlVariables.put("latitude", latitude);
-        urlVariables.put("radius", radius);
+        urlVariables.put("venueId", venueId);
+        urlVariables.put("shout", shout);
         urlVariables.put("version", version);
         HttpHeaders httpHeaders = new HttpHeaders();
         HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/v2/venues/search?oauth_token={token}&ll={longitude}%2C{latitude}&intent=browse&radius={radius}&v={version}"), HttpMethod.GET, requestEntity, VenuesResp.class, urlVariables).getBody();
-    }
-
-    @Override
-    public ResponseEntity<CheckIn> likeCheckIn(String checkInId) {
-        HashMap<String, Object> urlVariables = new HashMap<String, Object>();
-        urlVariables.put("checkInId", checkInId);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        HttpEntity<Object> requestEntity = new HttpEntity<Object>(httpHeaders);
-        return restTemplate.exchange(rootUrl.concat("/v2/checkins/{checkInId}/like"), HttpMethod.POST, requestEntity, CheckIn.class, urlVariables);
+        return restTemplate.exchange(rootUrl.concat("/v2/checkins/add?oauth_token={token}&venueId={venueId}&shout={shout}&v={version}"), HttpMethod.POST, requestEntity, CheckInResponse.class, urlVariables).getBody();
     }
 
 }

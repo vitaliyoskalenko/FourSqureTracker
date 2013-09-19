@@ -1,5 +1,7 @@
 package com.voskalenko.foursquretracker.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.j256.ormlite.field.DataType;
@@ -8,7 +10,7 @@ import com.j256.ormlite.field.DatabaseField;
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Venue implements Serializable{
+public class Venue implements Serializable, Parcelable{
 
     @DatabaseField(id = true)
     @JsonProperty("id")
@@ -63,5 +65,40 @@ public class Venue implements Serializable{
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(name);
+        parcel.writeParcelable(location, i);
+    }
+
+    public static final Parcelable.Creator<Venue> CREATOR = new Parcelable.Creator<Venue>() {
+
+        @Override
+        public Venue createFromParcel(Parcel in) {
+            Venue  venue= new Venue();
+            venue.setId(in.readString());
+            venue.setName(in.readString());
+            venue.setLocation((Location) in.readParcelable(Location.class.getClassLoader()));
+            return venue;
+        }
+
+        @Override
+        public Venue[] newArray(int size) {
+            return new Venue[size];
+        }
+
+    };
+
+    @Override
+    public String toString() {
+        return "id: " + getId() + ", name: " + getName();
     }
 }

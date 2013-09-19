@@ -2,32 +2,18 @@ package com.voskalenko.foursquretracker.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-
-import java.io.Serializable;
-import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CheckInList  implements Serializable {
+public class CheckInList {
 
-    @JsonProperty("count")
-    private int count;
-    @JsonProperty("items")
-    private List<CheckIn> checkins;
+    @JsonProperty("checkins")
+    private CheckIns checkInList;
 
-    public int getCount() {
-        return count;
+    public CheckIns getCheckInList() {
+        return checkInList;
     }
 
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public List<CheckIn> getCheckins() {
-        return checkins;
-    }
-
-    public void setCheckins(List<CheckIn> checkins) {
-        this.checkins = checkins;
+    public void setCheckInList(CheckIns checkInList) {
+        this.checkInList = checkInList;
     }
 }

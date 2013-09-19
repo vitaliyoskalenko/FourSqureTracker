@@ -1,12 +1,14 @@
 package com.voskalenko.foursquretracker.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Location implements Serializable{
+public class Location implements Serializable, Parcelable {
 
     @JsonProperty("lat")
     private double latitude;
@@ -60,5 +62,42 @@ public class Location implements Serializable{
         this.distance = distance;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
+        parcel.writeString(city);
+        parcel.writeString(country);
+        parcel.writeLong(distance);
+    }
+    public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
+
+        @Override
+        public Location createFromParcel(Parcel in) {
+            Location  location= new Location();
+            location.setLatitude(in.readDouble());
+            location.setLongitude(in.readDouble());
+            location.setCity(in.readString());
+            location.setCountry(in.readString());
+            location.setDistance(in.readLong());
+
+            return location;
+        }
+
+        @Override
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
+
+    @Override
+    public String toString() {
+        return getCountry() + "," + getCity() + " distance: " + getDistance();
+    }
 }
 

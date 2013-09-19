@@ -44,5 +44,8 @@ public class CheckIn  {
         this.venue = venue;
     }
 
-
+    @Override
+    public String toString() {
+        return "id: " + getId() + ", createdAt: " + getCreatedAt();
+    }
 }

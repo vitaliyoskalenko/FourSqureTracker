@@ -4,21 +4,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import com.voskalenko.foursquretracker.model.CheckInList;
+import com.voskalenko.foursquretracker.model.CheckIns;
 import com.voskalenko.foursquretracker.model.User;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class Session {
 
 	private static final String ACCESS_TOKEN = "access_token";
+    private static final String DATE_TOKEN = "date_token";
 	
 	private static final Session instance = new Session();
 
-
-    private static Calendar dateCreation;
     private static User userProfile;
-    private static CheckInList checkInList;
+    private static CheckIns checkInList;
 
 	private Session() {
 	}
@@ -27,12 +27,18 @@ public class Session {
 		return instance;
 	}
 
-    public Calendar getDateCreation() {
-        return dateCreation;
+    public Calendar getDateCreation(Context ctx) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Calendar dateToken = Calendar.getInstance();
+        dateToken.setTime(new Date(pref.getLong(DATE_TOKEN, 0)));
+        return dateToken;
     }
 
-    public void setDateCreation(Calendar dateCreation) {
-        Session.dateCreation = dateCreation;
+    public void setDateCreation(Context ctx, Date dateToken) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Editor ed = pref.edit();
+        ed.putLong(DATE_TOKEN, dateToken.getTime());
+        ed.commit();
     }
 
 	public void setAccessToken(Context ctx, String accessToken) {
@@ -56,11 +62,11 @@ public class Session {
         this.userProfile = userProfile;
     }
 
-    public CheckInList getCheckInList() {
+    public CheckIns getCheckInList() {
         return checkInList;
     }
 
-    public void setCheckInList(CheckInList checkInList) {
+    public void setCheckInList(CheckIns checkInList) {
         this.checkInList = checkInList;
     }
 

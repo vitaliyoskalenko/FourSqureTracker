@@ -5,5 +5,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="authentication">Foursqure authentication</string>
+    <string name="checkin_notif_title">Suitable venues for check in</string>
+    <string name="checkin_notif_text">Open dialog with venues and check in the right place</string>
+    <string name="distance_to_me">distance to me: %1$d m</string>
+    <string name="checkin_is_complete">Checkin: %1$s \n Venue: %2$s \n Location: %3$s</string>
+    <string name="wait_for_moment">wait for a moment</string>
+    <string name="foursqure_suitable_venues">FourSqureTracer: suitable venues</string>
 
 </resources>

@@ -3,6 +3,7 @@ package com.voskalenko.foursquretracker.db;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import com.googlecode.androidannotations.annotations.EBean;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -11,7 +12,8 @@ import com.voskalenko.foursquretracker.Logger;
 import com.voskalenko.foursquretracker.model.CheckIn;
 import com.voskalenko.foursquretracker.model.User;
 
-public class DBHelper  extends OrmLiteSqliteOpenHelper{
+@EBean
+public class DBHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "foursquretracker.sqlite";
     private static final String TAG = DBHelper.class.getSimpleName();
@@ -45,7 +47,7 @@ public class DBHelper  extends OrmLiteSqliteOpenHelper{
         if (checkInDao == null) {
             try {
                 checkInDao = getDao(CheckIn.class);
-            }catch (java.sql.SQLException e) {
+            } catch (java.sql.SQLException e) {
                 Logger.e(e);
             }
         }
@@ -56,7 +58,7 @@ public class DBHelper  extends OrmLiteSqliteOpenHelper{
         if (userDao == null) {
             try {
                 userDao = getDao(User.class);
-            }catch (java.sql.SQLException e) {
+            } catch (java.sql.SQLException e) {
                 e.printStackTrace();
             }
         }

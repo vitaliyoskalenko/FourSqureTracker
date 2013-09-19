@@ -8,10 +8,10 @@ package com.voskalenko.foursquretracker.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import com.voskalenko.foursquretracker.CurrLocation;
+import com.voskalenko.foursquretracker.LocationManagerEx;
 
 public final class CurrLocation_
-    extends CurrLocation
+    extends LocationManagerEx
 {
 
     private Context context_;

@@ -17,4 +17,11 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="bottom_text_style">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:paddingLeft">4dp</item>
+
+    </style>
+
 </resources>

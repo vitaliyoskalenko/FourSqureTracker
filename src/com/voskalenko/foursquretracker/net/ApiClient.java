@@ -1,4 +1,4 @@
-package com.voskalenko.foursquretracker.task;
+package com.voskalenko.foursquretracker.net;
 
 import android.content.Context;
 import com.googlecode.androidannotations.annotations.AfterInject;
@@ -8,12 +8,9 @@ import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.annotations.rest.RestService;
 import com.googlecode.androidannotations.api.Scope;
 import com.voskalenko.foursquretracker.Constants;
-import com.voskalenko.foursquretracker.model.Token;
 import com.voskalenko.foursquretracker.callback.*;
-import com.voskalenko.foursquretracker.model.CheckIn;
-import com.voskalenko.foursquretracker.model.CheckInList;
-import com.voskalenko.foursquretracker.model.User;
-import com.voskalenko.foursquretracker.model.Venue;
+import com.voskalenko.foursquretracker.model.*;
+import com.voskalenko.foursquretracker.service.NetworkService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
@@ -26,7 +23,6 @@ public class ApiClient {
 
     @RootContext
     Context ctx;
-
     @RestService
     protected NetworkService service;
 
@@ -58,7 +54,7 @@ public class ApiClient {
     public void getAllCheckInTask(String token, GetAllCheckInCallback callback) {
         try {
             getService().setRootUrl(Constants.API_URL);
-            CheckInList checkInLst = getService().getAllCheckIn(token, version).getCheckInList();
+            CheckIns checkInLst = getService().getAllCheckIn(token, version).getResponse().getCheckInList();
             callback.onSuccess(checkInLst);
         } catch (Exception e) {
             callback.onFail("Failed to get all checkIns", e);
@@ -66,10 +62,10 @@ public class ApiClient {
     }
 
     @Background
-    public void likeCheckInTask(String checkInId, LikeCheckInCallback callback) {
+    public void addCheckInTask(String token, CheckInPostBody postBody, AddCheckInCallback callback) {
         try {
             getService().setRootUrl(Constants.API_URL);
-            CheckIn checkIn = getService().likeCheckIn(checkInId).getBody();
+            CheckIn checkIn = getService().addCheckIn(token, postBody.getVenueId(), postBody.getShout(), version).getResponse().getCheckIn();
             callback.onSuccess(checkIn);
         } catch (RestClientException e) {
             callback.onFail("Failed to like check in", e);
@@ -77,10 +73,10 @@ public class ApiClient {
     }
 
     @Background
-    public  void getUserTask(UserCallback callback) {
+    public void getUserTask(String token, UserCallback callback) {
         try {
             getService().setRootUrl(Constants.API_URL);
-            User userProfile = getService().getUserProfile(version).getBody();
+            User userProfile = getService().getUserProfile(token, version).getResponse().getUser();
             callback.onSuccess(userProfile);
         } catch (RestClientException e) {
             callback.onFail("Failed to get user's profile", e);
@@ -88,10 +84,11 @@ public class ApiClient {
     }
 
     @Background
-    public void getNearestVenuesTask(String token, double longitude, double latitude, GetNearestVenuesCallback callback) {
+    public void getNearestVenuesTask(String token, double latitude, double longitude, GetNearestVenuesCallback callback) {
         try {
             getService().setRootUrl(Constants.API_URL);
-            List<Venue> venueList = getService().getNearestVenues(token, longitude, latitude, Constants.DETECT_RADIUS, version).getVenues();
+            List<Venue> venueList = getService().getNearestVenues(token, latitude, longitude,
+                    Constants.DETECT_RADIUS, version).getResponse().getVenues();
             callback.onSuccess(venueList);
         } catch (RestClientException e) {
             callback.onFail("Failed to get nearest venues", e);

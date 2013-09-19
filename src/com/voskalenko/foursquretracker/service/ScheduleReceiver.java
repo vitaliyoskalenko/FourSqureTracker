@@ -6,7 +6,7 @@
  * and are its intellectual property
  */
 
-package com.voskalenko.foursquretracker.svc;
+package com.voskalenko.foursquretracker.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -42,7 +42,6 @@ public class ScheduleReceiver extends BroadcastReceiver {
     }
 
     public void scheduleDetect(Context ctx, boolean stopSchedule) {
-
         Intent intent = new Intent(ctx, DetectCheckInSvc_.class);
         PendingIntent pIntent = PendingIntent.getService(ctx, 0, intent, 0);
 

@@ -3,18 +3,20 @@
 //
 
 
-package com.voskalenko.foursquretracker.task;
+package com.voskalenko.foursquretracker.net;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import com.googlecode.androidannotations.api.BackgroundExecutor;
+import com.voskalenko.foursquretracker.callback.AddCheckInCallback;
 import com.voskalenko.foursquretracker.callback.GetAllCheckInCallback;
 import com.voskalenko.foursquretracker.callback.GetNearestVenuesCallback;
 import com.voskalenko.foursquretracker.callback.GetTokenCallback;
-import com.voskalenko.foursquretracker.callback.LikeCheckInCallback;
 import com.voskalenko.foursquretracker.callback.UserCallback;
+import com.voskalenko.foursquretracker.model.CheckInPostBody;
+import com.voskalenko.foursquretracker.service.NetworkService_;
 
 public final class ApiClient_
     extends ApiClient
@@ -64,14 +66,14 @@ public final class ApiClient_
     }
 
     @Override
-    public void getUserTask(final UserCallback callback) {
+    public void getUserTask(final String token, final UserCallback callback) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ApiClient_.super.getUserTask(callback);
+                    ApiClient_.super.getUserTask(token, callback);
                 } catch (RuntimeException e) {
                     Log.e("ApiClient_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -82,14 +84,32 @@ public final class ApiClient_
     }
 
     @Override
-    public void getNearestVenuesTask(final String token, final double longitude, final double latitude, final GetNearestVenuesCallback callback) {
+    public void getNearestVenuesTask(final String token, final double latitude, final double longitude, final GetNearestVenuesCallback callback) {
         BackgroundExecutor.execute(new Runnable() {
 
 
             @Override
             public void run() {
                 try {
-                    ApiClient_.super.getNearestVenuesTask(token, longitude, latitude, callback);
+                    ApiClient_.super.getNearestVenuesTask(token, latitude, longitude, callback);
+                } catch (RuntimeException e) {
+                    Log.e("ApiClient_", "A runtime exception was thrown while executing code in a runnable", e);
+                }
+            }
+
+        }
+        );
+    }
+
+    @Override
+    public void addCheckInTask(final String token, final CheckInPostBody postBody, final AddCheckInCallback callback) {
+        BackgroundExecutor.execute(new Runnable() {
+
+
+            @Override
+            public void run() {
+                try {
+                    ApiClient_.super.addCheckInTask(token, postBody, callback);
                 } catch (RuntimeException e) {
                     Log.e("ApiClient_", "A runtime exception was thrown while executing code in a runnable", e);
                 }
@@ -108,24 +128,6 @@ public final class ApiClient_
             public void run() {
                 try {
                     ApiClient_.super.getAllCheckInTask(token, callback);
-                } catch (RuntimeException e) {
-                    Log.e("ApiClient_", "A runtime exception was thrown while executing code in a runnable", e);
-                }
-            }
-
-        }
-        );
-    }
-
-    @Override
-    public void likeCheckInTask(final String checkInId, final LikeCheckInCallback callback) {
-        BackgroundExecutor.execute(new Runnable() {
-
-
-            @Override
-            public void run() {
-                try {
-                    ApiClient_.super.likeCheckInTask(checkInId, callback);
                 } catch (RuntimeException e) {
                     Log.e("ApiClient_", "A runtime exception was thrown while executing code in a runnable", e);
                 }

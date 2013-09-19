@@ -3,7 +3,7 @@
 //
 
 
-package com.voskalenko.foursquretracker.svc;
+package com.voskalenko.foursquretracker.service;
 
 import android.app.AlarmManager;
 import android.content.Context;

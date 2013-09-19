@@ -2,16 +2,14 @@ package com.voskalenko.foursquretracker.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.j256.ormlite.field.DatabaseField;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonRootName("user")
 public class User {
 
     @DatabaseField(id = true)
     @JsonProperty("id")
-    private long id;
+    private String id;
 
     @DatabaseField
     @JsonProperty("firstName")
@@ -25,15 +23,11 @@ public class User {
     @JsonProperty("homeCity")
     private String city;
 
-    @DatabaseField
-    @JsonProperty("photo")
-    private String photoUrl;
-
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -59,14 +53,6 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
     }
 }
 

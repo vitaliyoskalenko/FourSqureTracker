@@ -7,9 +7,11 @@ package com.voskalenko.foursquretracker;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.view.View;
-import com.voskalenko.foursquretracker.task.ApiClient_;
+import com.voskalenko.foursquretracker.db.DBManager_;
+import com.voskalenko.foursquretracker.net.ApiClient_;
 
 public final class FourSqureTrackerApp_
     extends FourSqureTrackerApp
@@ -26,6 +28,7 @@ public final class FourSqureTrackerApp_
         if (!(context_ instanceof Activity)) {
             return ;
         }
+        ((DBManager_) dbManager).afterSetContentView_();
         ((ApiClient_) apiClient).afterSetContentView_();
     }
 
@@ -44,9 +47,12 @@ public final class FourSqureTrackerApp_
             Activity activity = ((Activity) context_);
         }
         activityMng = ((ActivityManager) context_.getSystemService(Context.ACTIVITY_SERVICE));
+        notificationMng = ((NotificationManager) context_.getSystemService(Context.NOTIFICATION_SERVICE));
+        ctx = context_;
         if (context_ instanceof Activity) {
-            ctx = ((Activity) context_);
+            activity = ((Activity) context_);
         }
+        dbManager = DBManager_.getInstance_(context_);
         apiClient = ApiClient_.getInstance_(context_);
         init();
     }

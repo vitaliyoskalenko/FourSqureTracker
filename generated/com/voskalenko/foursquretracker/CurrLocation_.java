@@ -11,7 +11,7 @@ import android.location.LocationManager;
 import android.view.View;
 
 public final class CurrLocation_
-    extends CurrLocation
+    extends LocationManagerEx
 {
 
     private Context context_;

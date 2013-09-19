@@ -7,8 +7,7 @@ import android.widget.ToggleButton;
 import com.googlecode.androidannotations.annotations.*;
 import com.voskalenko.foursquretracker.FourSqureTrackerApp;
 import com.voskalenko.foursquretracker.R;
-import com.voskalenko.foursquretracker.Session;
-import com.voskalenko.foursquretracker.svc.ScheduleReceiver_;
+import com.voskalenko.foursquretracker.service.ScheduleReceiver_;
 
 
 @EActivity(R.layout.activity_home)
@@ -23,8 +22,11 @@ public class HomeActivity extends Activity {
     @AfterInject
     void init() {
         ctx = this;
-        //trackerApp.matchVenuesWithCheckIns(Session.getInstance().getAccessToken(ctx), 40.7, -74);
-        trackerApp.getAllCheckIn(Session.getInstance().getAccessToken(ctx));
+        Intent intent = new Intent(ctx, ScheduleReceiver_.class);
+        intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, true);
+        sendBroadcast(intent);
+        if(!trackerApp.sessionIsActual())
+            trackerApp.verify();
     }
 
     @ViewById(R.id.btn_switch_on)
@@ -44,6 +46,5 @@ public class HomeActivity extends Activity {
         else intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, true);
 
         sendBroadcast(intent);
-
     }
 }

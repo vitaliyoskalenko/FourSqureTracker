@@ -10,6 +10,6 @@ public class Constants {
 	public static final String TOKEN_URL = "/oauth2/access_token?grant_type=authorization_code";	
 	public static final String API_URL = "https://api.foursquare.com";
 	
-    public static final int DETECT_PERIOD = 5000;
-    public static final int DETECT_RADIUS = 5;
+    public static final int DETECT_PERIOD = 10000;
+    public static final int DETECT_RADIUS = 100;
 }

@@ -1,6 +1,5 @@
 package com.voskalenko.foursquretracker.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.ToggleButton;
@@ -11,7 +10,7 @@ import com.voskalenko.foursquretracker.service.ScheduleReceiver_;
 
 
 @EActivity(R.layout.activity_home)
-public class HomeActivity extends Activity {
+public class HomeActivity extends BaseActivity {
 
     @Bean
     FourSqureTrackerApp trackerApp;

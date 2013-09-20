@@ -6,20 +6,17 @@
 package com.voskalenko.foursquretracker;
 
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.NotificationManager;
 import android.content.Context;
+import android.location.LocationManager;
 import android.view.View;
-import com.voskalenko.foursquretracker.db.DBManager_;
-import com.voskalenko.foursquretracker.net.ApiClient_;
 
-public final class FourSqureTrackerApp_
-    extends FourSqureTrackerApp
+public final class LocationManagerEx_
+    extends LocationManagerEx
 {
 
     private Context context_;
 
-    private FourSqureTrackerApp_(Context context) {
+    private LocationManagerEx_(Context context) {
         context_ = context;
         init_();
     }
@@ -28,8 +25,6 @@ public final class FourSqureTrackerApp_
         if (!(context_ instanceof Activity)) {
             return ;
         }
-        ((ApiClient_) apiClient).afterSetContentView_();
-        ((DBManager_) dbManager).afterSetContentView_();
     }
 
     /**
@@ -46,19 +41,13 @@ public final class FourSqureTrackerApp_
         if (context_ instanceof Activity) {
             Activity activity = ((Activity) context_);
         }
-        notificationMng = ((NotificationManager) context_.getSystemService(Context.NOTIFICATION_SERVICE));
-        activityMng = ((ActivityManager) context_.getSystemService(Context.ACTIVITY_SERVICE));
+        locationManager = ((LocationManager) context_.getSystemService(Context.LOCATION_SERVICE));
         ctx = context_;
-        if (context_ instanceof Activity) {
-            activity = ((Activity) context_);
-        }
-        apiClient = ApiClient_.getInstance_(context_);
-        dbManager = DBManager_.getInstance_(context_);
         init();
     }
 
-    public static FourSqureTrackerApp_ getInstance_(Context context) {
-        return new FourSqureTrackerApp_(context);
+    public static LocationManagerEx_ getInstance_(Context context) {
+        return new LocationManagerEx_(context);
     }
 
     public void rebind(Context context) {

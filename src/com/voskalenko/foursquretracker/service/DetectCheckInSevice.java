@@ -29,20 +29,20 @@ import com.voskalenko.foursquretracker.model.CheckIns;
  * @version 1.0 11 Sep 2013
  */
 @EService
-public class DetectCheckInSvc extends IntentService {
+public class DetectCheckInSevice extends IntentService {
 
     @Bean
     LocationManagerEx currLocation;
     @Bean
     FourSqureTrackerApp trackerApp;
 
-    private static final String TAG = DetectCheckInSvc.class.getSimpleName();
+    private static final String TAG = DetectCheckInSevice.class.getSimpleName();
     private final Session session;
 
     @SystemService
     LocationManager locationManager;
 
-    public DetectCheckInSvc() {
+    public DetectCheckInSevice() {
         super("DetectCheckInSvc_");
         session = Session.getInstance();
     }

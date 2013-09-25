@@ -46,6 +46,6 @@ public class CheckIn  {
 
     @Override
     public String toString() {
-        return "id: " + getId() + ", createdAt: " + getCreatedAt();
+        return "id: " + getId() + "\n createdAt: " + getCreatedAt();
     }
 }

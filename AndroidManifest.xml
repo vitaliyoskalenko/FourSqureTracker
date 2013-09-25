@@ -11,6 +11,7 @@
             android:targetSdkVersion="16"/>
 
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
+
         <activity
                 android:name=".ui.HomeActivity_"
                 android:label="@string/app_name">
@@ -27,6 +28,22 @@
                 android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
+        <activity
+                android:name=".ui.FourSqureTrackerPreference"
+                android:label="@string/app_name">
+        </activity>
+
+        <activity
+                android:name=".ui.ProposedVenuesActivity_"
+                android:label="@string/app_name">
+        </activity>
+
+        <service
+                android:name=".service.DetectCheckInSevice_"
+                android:enabled="true"
+                android:exported="false">
+        </service>
+
         <receiver
                 android:name=".service.ScheduleReceiver_"
                 android:enabled="true"
@@ -36,12 +53,11 @@
             </intent-filter>
         </receiver>
 
-        <service
-                android:name=".service.DetectCheckInSvc_"
+        <provider
+                android:name=".database.ProposedVenueProvider_"
                 android:enabled="true"
-                android:exported="false">
-        </service>
-
+                android:exported="false"
+                android:authorities="com.voskalenko.provider.foursqretracker"/>
 
     </application>
 </manifest>

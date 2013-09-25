@@ -16,16 +16,10 @@ public interface NetworkService {
     public ResponseEntity<Token> getAccessToken(String clientId, String clientSecret,
                                                 String callback, String verifyCode) throws RestClientException;
     @Get("/v2/users/self/checkins?oauth_token={token}&v={version}")
-    public CheckInsResponse getAllCheckIn(String token, String version) throws RestClientException;
-
-    @Get("/v2/users/self?oauth_token={token}&v={version}")
-    public UserResponse getUserProfile(String token, String version) throws RestClientException;
-
-    @Get("/v2/venues/search?oauth_token={token}&ll={latitude},{longitude}&intent=checkin&radius={radius}&v={version}")
-    public VenueResponse getNearestVenues(String token, double latitude, double longitude, int radius, String version) throws  RestClientException;
+    public CheckInsResp getAllCheckIn(String token, String version) throws RestClientException;
 
     @Post("/v2/checkins/add?oauth_token={token}&venueId={venueId}&shout={shout}&v={version}")
-    public CheckInResponse addCheckIn(String token, String venueId, String shout, String version) throws RestClientException;
+    public CheckInResp addCheckIn(String token, String venueId, String shout, String version) throws RestClientException;
 
     public void setRootUrl(String url);
 

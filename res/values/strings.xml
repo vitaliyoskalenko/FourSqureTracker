@@ -7,9 +7,44 @@
     <string name="authentication">Foursqure authentication</string>
     <string name="checkin_notif_title">Suitable venues for check in</string>
     <string name="checkin_notif_text">Open dialog with venues and check in the right place</string>
-    <string name="distance_to_me">distance to me: %1$d m</string>
-    <string name="checkin_is_complete">Checkin: %1$s \n Venue: %2$s \n Location: %3$s</string>
+    <string name="distance_to_me">, distance to me: %1$d m</string>
+    <string name="checkin_is_complete">Checkin:\n %1$s \nVenue:\n %2$s \nLocation:\n %3$s</string>
     <string name="wait_for_moment">wait for a moment</string>
     <string name="foursqure_suitable_venues">FourSqureTracer: suitable venues</string>
+    <string name="detect_time_title">Detect time</string>
+    <string name="detect_time_summary">Detect time summary</string>
+    <string name="pref_user_profile">Pref user profile</string>
+    <string name="token_expired_term">token expired term</string>
+    <string name= "detect_radius_summary">detect radius summary</string>
+    <string name="detect_radius_title">detect radius title</string>
+    <string name="service_activated">Service has just activated</string>
+    <string name="service_deactivated">Service has been deactivated</string>
+    <string name="remind_me_later">Remind me later</string>
+    <string name="no_thanks">No, thanks</string>
+
+    <string-array name="detect_time_entries">
+        <item>10 min</item>
+        <item>20 min</item>
+        <item>30 min</item>
+    </string-array>
+
+    <string-array name="detect_time_values">
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="detect_radius_entries">
+        <item>50 meters</item>
+        <item>100 meters</item>
+        <item>150 meters</item>
+    </string-array>
+
+    <string-array name="detect_radius_values">
+        <item>50</item>
+        <item>100</item>
+        <item>150</item>
+    </string-array>
+
 
 </resources>

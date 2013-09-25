@@ -9,7 +9,12 @@ public class Constants {
 	public static final String AUTH_URL = "/oauth2/authorize?response_type=code";
 	public static final String TOKEN_URL = "/oauth2/access_token?grant_type=authorization_code";	
 	public static final String API_URL = "https://api.foursquare.com";
-	
-    public static final int DETECT_PERIOD = 10000;
-    public static final int DETECT_RADIUS = 100;
+
+    private static final int ONE_DAY_MILSECONDS = 24 * 60 * 60 * 1000;
+    public static final int DEFAULT_DETECT_TIME = 7 * 1000;
+    public static final int DEFAULT_DETECT_RADIUS = 100;
+    public static final int TOKEN_EXPIRED_TERM =  ONE_DAY_MILSECONDS;
+    public static final int UPDATE_VENUES_TERM =  ONE_DAY_MILSECONDS / 2;
 }
+
+

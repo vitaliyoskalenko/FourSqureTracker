@@ -1,49 +1,27 @@
 package com.voskalenko.foursquretracker.ui;
 
-import android.content.Context;
-import android.content.Intent;
-import android.widget.ToggleButton;
-import com.googlecode.androidannotations.annotations.*;
-import com.voskalenko.foursquretracker.FourSqureTrackerApp;
+import com.googlecode.androidannotations.annotations.AfterInject;
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.OptionsItem;
+import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.voskalenko.foursquretracker.R;
-import com.voskalenko.foursquretracker.service.ScheduleReceiver_;
 
 
-@EActivity(R.layout.activity_home)
+@EActivity
+@OptionsMenu(R.menu.activity_home)
 public class HomeActivity extends BaseActivity {
 
-    @Bean
-    FourSqureTrackerApp trackerApp;
-
-    private Context ctx;
     private static final String TAG = HomeActivity.class.getSimpleName();
 
     @AfterInject
     void init() {
-        ctx = this;
-        Intent intent = new Intent(ctx, ScheduleReceiver_.class);
-        intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, true);
-        sendBroadcast(intent);
-        if(!trackerApp.sessionIsActual())
-            trackerApp.verify();
+        HomeFragment homeFragment;
+        homeFragment = HomeFragment_.builder().build();
+        replaceFragment(R.id.activity_base_frame, homeFragment);
     }
 
-    @ViewById(R.id.btn_switch_on)
-    ToggleButton btnSwitchOn;
-
-    @AfterViews
-    void initViews() {
-       btnSwitchOn.setChecked(trackerApp.isDetectSvcRunning());
-    }
-
-    @Click
-    void btn_switch_on() {
-
-        Intent intent = new Intent(ctx, ScheduleReceiver_.class);
-        if (btnSwitchOn.getTextOn().equals("ON"))
-            intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, false);
-        else intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, true);
-
-        sendBroadcast(intent);
+    @OptionsItem(R.id.menu_settings)
+    void menuSettings() {
+        FourSqureTrackerPreference.start(this);
     }
 }

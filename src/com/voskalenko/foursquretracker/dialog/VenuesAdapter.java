@@ -1,90 +1,86 @@
 package com.voskalenko.foursquretracker.dialog;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.CursorAdapter;
 import com.googlecode.androidannotations.annotations.EBean;
-import com.googlecode.androidannotations.annotations.RootContext;
-import com.googlecode.androidannotations.annotations.SystemService;
 import com.voskalenko.foursquretracker.R;
-import com.voskalenko.foursquretracker.callback.VenueCallback;
+import com.voskalenko.foursquretracker.callback.ProposedVenuesCallback;
 import com.voskalenko.foursquretracker.model.Venue;
+import com.voskalenko.foursquretracker.views.ProposedVenueView;
+import com.voskalenko.foursquretracker.views.ProposedVenueView_;
 
-import java.util.List;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
+
 @EBean
-public class VenuesAdapter extends BaseAdapter {
+public class VenuesAdapter extends CursorAdapter implements View.OnClickListener {
 
-    @RootContext
-    Context ctx;
+    private ProposedVenuesCallback callback;
+    private int idIndex;
+    private Map<String, Map.Entry<Boolean, Boolean>> checkedButtonList;
 
-    @SystemService
-    LayoutInflater inflater;
+    public VenuesAdapter(Context context) {
+        super(context, null, false);
+        checkedButtonList = new HashMap<String, Map.Entry<Boolean, Boolean>>();
+    }
 
-    private List<Venue> venues;
-    private VenueCallback callback;
-
-    public void setCallback(VenueCallback callback) {
+    public void setCheckInCallback(ProposedVenuesCallback callback) {
         this.callback = callback;
     }
 
-    public void setVenues(List<Venue> venues) {
-        this.venues = venues;
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        ProposedVenueView view = ProposedVenueView_.build(context);
+        view.getBtnCheckIn().setOnClickListener(this);
+        view.getBtnMute().setOnClickListener(this);
+
+        int idIndex = cursor.getColumnIndex(Venue.FIELD_ID);
+        return view;
+
     }
 
     @Override
-	public int getCount() {
-		return venues == null ? 0 : venues.size();
-	}
+    public void bindView(View view, Context context, Cursor cursor) {
+        final ProposedVenueView wrappedView = (ProposedVenueView) view;
+        final Venue venue = Venue.fromCursor(cursor);
+        wrappedView.setData(venue);
 
-	@Override
-	public Object getItem(int position) {
-		return venues == null ? null : venues.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-        return 0;
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-        UIHolder holder;
-        if(convertView == null) {
-            holder = new UIHolder();
-            convertView = inflater.inflate(R.layout.venues_list_item, null);
-            holder.txtVenuName = (TextView) convertView.findViewById(R.id.txt_venue_name);
-            holder.txtCity =  (TextView) convertView.findViewById(R.id.txt_city);
-            holder.txtDistance = (TextView) convertView.findViewById(R.id.txt_distance);
-            holder.btnCheckIn = (ImageButton) convertView.findViewById(R.id.btn_checkin);
-            holder.btnCheckIn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String venueId = ((Venue)view.getTag()).getId();
-                    callback.onSuccess(venueId);
-                }
-            });
-            convertView.setTag(holder);
-        } else
-            holder = (UIHolder) convertView.getTag();
-
-        Venue venue = venues.get(position);
-        holder.txtVenuName.setText(venue.getName());
-        holder.txtCity.setText(venue.getLocation().getCity());
-        holder.txtDistance.setText(ctx.getString(R.id.txt_distance, venue.getLocation().getDistance()));
-        holder.btnCheckIn.setTag(getItem(position));
-
-        return convertView;
-	}
-
-    static class UIHolder {
-        TextView txtVenuName;
-        TextView txtCity;
-        TextView txtDistance;
-        ImageButton btnCheckIn;
+        String venueId = cursor.getString(idIndex);
+        if (checkedButtonList.containsKey(venueId)) {
+            Map.Entry<Boolean, Boolean> entry = checkedButtonList.get(venueId);
+            wrappedView.getBtnMute().setVisibility(entry.getKey() == true ? View.GONE : View.VISIBLE);
+            wrappedView.getBtnCheckIn().setVisibility(entry.getValue() == true ? View.GONE : View.VISIBLE);
+        }
     }
 
+    @Override
+    public void changeCursor(Cursor cursor) {
+        super.changeCursor(cursor);
+        idIndex = cursor.getColumnIndex(Venue.FIELD_ID);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Venue venue = (Venue) view.getTag();
+        Map.Entry<Boolean, Boolean> entry;
+        if (checkedButtonList.containsKey(venue.getId())) {
+            Map.Entry<Boolean, Boolean> entryTmp = checkedButtonList.get(venue.getId());
+
+            entry = new AbstractMap.SimpleEntry<Boolean, Boolean>(
+                    view.getId() == R.id.btn_mute || entryTmp.getKey(),
+                    view.getId() == R.id.btn_checkin || entryTmp.getValue());
+        } else {
+            entry = new AbstractMap.SimpleEntry<Boolean, Boolean>(
+                    view.getId() == R.id.btn_mute,
+                    view.getId() == R.id.btn_checkin);
+        }
+
+        checkedButtonList.put(venue.getId(), entry);
+        callback.onSuccess(venue, view.getId());
+        notifyDataSetInvalidated();
+    }
 }

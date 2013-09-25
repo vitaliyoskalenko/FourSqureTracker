@@ -13,9 +13,7 @@ public class Logger {
 	private static final boolean isActive = true;
 	
 	public static void i(String msg){
-		if(!isActive)
-			return;
-		Log.i(TAG, msg);
+        Log.i(TAG, msg);
 	}
 	
 	public static void d(String msg){

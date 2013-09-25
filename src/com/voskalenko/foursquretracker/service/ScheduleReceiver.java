@@ -14,9 +14,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EReceiver;
 import com.googlecode.androidannotations.annotations.SystemService;
-import com.voskalenko.foursquretracker.Constants;
+import com.voskalenko.foursquretracker.AccountManager;
 
 /**
  * Receiver runs service in some period
@@ -32,6 +33,8 @@ public class ScheduleReceiver extends BroadcastReceiver {
 
     @SystemService
     static AlarmManager alarmMng;
+    @Bean
+    AccountManager accountManager;
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
@@ -42,14 +45,14 @@ public class ScheduleReceiver extends BroadcastReceiver {
     }
 
     public void scheduleDetect(Context ctx, boolean stopSchedule) {
-        Intent intent = new Intent(ctx, DetectCheckInSvc_.class);
+        Intent intent = new Intent(ctx, DetectCheckInSevice_.class);
         PendingIntent pIntent = PendingIntent.getService(ctx, 0, intent, 0);
 
         if (stopSchedule)
             alarmMng.cancel(pIntent);
         else
             alarmMng.setRepeating(AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime() + Constants.DETECT_PERIOD, Constants.DETECT_PERIOD, pIntent);
+                    SystemClock.elapsedRealtime() + accountManager.getDetectTime(), accountManager.getDetectTime(), pIntent);
 
     }
 }

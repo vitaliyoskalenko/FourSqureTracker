@@ -10,17 +10,21 @@ package com.voskalenko.foursquretracker.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.location.Location;
 import android.location.LocationManager;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EService;
 import com.googlecode.androidannotations.annotations.SystemService;
+import com.voskalenko.foursquretracker.AccountManager;
+import com.voskalenko.foursquretracker.FourSqureTrackerHelper;
 import com.voskalenko.foursquretracker.LocationManagerEx;
-import com.voskalenko.foursquretracker.FourSqureTrackerApp;
 import com.voskalenko.foursquretracker.Logger;
-import com.voskalenko.foursquretracker.Session;
-import com.voskalenko.foursquretracker.callback.DetectCheckInSvcCallback;
-import com.voskalenko.foursquretracker.model.CheckIns;
+import com.voskalenko.foursquretracker.callback.AllVenueCallback;
+import com.voskalenko.foursquretracker.database.DBManager;
+import com.voskalenko.foursquretracker.model.LocationEx;
+import com.voskalenko.foursquretracker.model.Venue;
+import com.voskalenko.foursquretracker.net.ApiClient;
+
+import java.util.List;
 
 /**
  * Service runs with BroadcastReceiver in some period and looking for appropriate check-in
@@ -31,48 +35,78 @@ import com.voskalenko.foursquretracker.model.CheckIns;
 @EService
 public class DetectCheckInSevice extends IntentService {
 
-    @Bean
+    //@Bean
     LocationManagerEx currLocation;
     @Bean
-    FourSqureTrackerApp trackerApp;
-
-    private static final String TAG = DetectCheckInSevice.class.getSimpleName();
-    private final Session session;
-
+    ApiClient apiClient;
+    @Bean
+    DBManager dbManager;
+    @Bean
+    AccountManager accountManager;
     @SystemService
     LocationManager locationManager;
 
+    private static final String TAG = DetectCheckInSevice.class.getSimpleName();
+
     public DetectCheckInSevice() {
         super("DetectCheckInSvc_");
-        session = Session.getInstance();
+    }
+
+    public DBManager getDbManager() {
+        return dbManager;
+    }
+
+    public ApiClient getApiClient() {
+        return apiClient;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         Logger.i(TAG + ": Service is running");
-        CheckIns checkInList;
-        if (trackerApp.sessionIsActual()) {
-            trackerApp.restoreSessionFromDB();
-        } else if (trackerApp.hasAccessToken()) {
-            trackerApp.getAllCheckIn(callback);
+
+       /* Location currentLocation = currLocation.getLocation();
+        if (currentLocation != null) {
+          accountManager.setLastLocation(currentLocation.getLatitude(),
+                  currentLocation.getLongitude());
+        } else return;*/
+
+        if (accountManager.getDisableDetectInCurrRadius()) {
+            LocationEx lastLocation = accountManager.getLastLocation();
+
+            int detectRadius = accountManager.getDetectRadius();
+            float distance = FourSqureTrackerHelper.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(),
+                    40.631440669811525, 32.613043785095215);
+            if (distance > detectRadius)
+                accountManager.setDisableDetectInCurrRadius(false);
+            else return;
+        }
+
+        AllVenueCallback callback = new AllVenueCallback() {
+
+            @Override
+            public void onSuccess(List<Venue> venues) {
+                accountManager.setVenueList(venues);
+                getDbManager().addOrUpdVenues(venues);
+            }
+
+            @Override
+            public void onFail(String error, Exception e) {
+                Logger.e(error, e);
+            }
+        };
+
+        accountManager.setLastLocation(46.631440669811500, 32.613043785095200);
+        getDbManager().uncheckProposed();
+
+        if (accountManager.isSessionActual() && accountManager.isVenuesActual()) {
+            accountManager.restoreSessionFromDB();
+        } else if (accountManager.hasAccessToken()) {
+            getApiClient().getAllVenues(callback);
         } else Logger.i("You need to pass authentication in Activity");
 
+        if (accountManager.getVenueList() != null &&
+                accountManager.getVenueList().size() != 0 ) {
+            getApiClient().getSuitableVenues(46.631440669811525, 32.613043785095215);
+        }
     }
-
-    DetectCheckInSvcCallback callback = new DetectCheckInSvcCallback() {
-        @Override
-        public void onSuccess() {
-            Location location = currLocation.getLocation();
-            if (location != null)
-                trackerApp.matchVenuesWithCheckIns(46.631440669811525,32.613043785095215);
-/*
-                trackerApp.matchVenuesWithCheckIns(location.getLongitude(), location.getLatitude());
-*/
-        }
-
-        @Override
-        public void onFail(String error, Exception e) {
-        }
-    };
-
 }

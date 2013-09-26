@@ -11,6 +11,7 @@ import com.voskalenko.foursquretracker.R;
 import com.voskalenko.foursquretracker.service.ScheduleReceiver_;
 
 @EFragment(R.layout.fragment_home)
+@OptionsMenu(R.menu.activity_home)
 public class HomeFragment extends BaseFragment {
 
     @Bean
@@ -25,8 +26,8 @@ public class HomeFragment extends BaseFragment {
 
     @AfterViews
     void initViews() {
-        if (trackerHelper.isDetectSvcRunning()) {
-            btnSwitchOn.setChecked(true);
+        btnSwitchOn.setChecked(accountManager.getIsDetectSvcRunning());
+        if (accountManager.getIsDetectSvcRunning()) {
             startOrStopSchedule(FLAG_STOP);
         }
     }
@@ -52,14 +53,15 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        accountManager.setIsDetectSvcRunning(btnSwitchOn.isChecked());
         if (btnSwitchOn.isChecked()) {
             startOrStopSchedule(FLAG_START);
         }
     }
 
-    private void startOrStopSchedule(boolean stop) {
+    private void startOrStopSchedule(boolean scheduleFlag) {
         Intent intent = new Intent(getActivity(), ScheduleReceiver_.class);
-        intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, stop);
+        intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, scheduleFlag);
         getActivity().sendBroadcast(intent);
     }
 }

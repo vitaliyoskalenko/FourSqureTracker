@@ -7,20 +7,37 @@
     <string name="authentication">Foursqure authentication</string>
     <string name="checkin_notif_title">Suitable venues for check in</string>
     <string name="checkin_notif_text">Open dialog with venues and check in the right place</string>
-    <string name="distance_to_me">, distance to me: %1$d m</string>
+    <string name="distance_to_me">, distance to me: %1$s m</string>
     <string name="checkin_is_complete">Checkin:\n %1$s \nVenue:\n %2$s \nLocation:\n %3$s</string>
     <string name="wait_for_moment">wait for a moment</string>
-    <string name="foursqure_suitable_venues">FourSqureTracer: suitable venues</string>
+    <string name="foursqure_suitable_venues">Suitable venues for check-in</string>
     <string name="detect_time_title">Detect time</string>
-    <string name="detect_time_summary">Detect time summary</string>
-    <string name="pref_user_profile">Pref user profile</string>
+    <string name="detect_time_summary">Search service to be started for this time</string>
+    <string name="pref_user_profile">User\'s options</string>
     <string name="token_expired_term">token expired term</string>
-    <string name= "detect_radius_summary">detect radius summary</string>
-    <string name="detect_radius_title">detect radius title</string>
+    <string name= "detect_radius_summary">Search occur within this radius</string>
+    <string name="detect_radius_title">Detect radius</string>
     <string name="service_activated">Service has just activated</string>
     <string name="service_deactivated">Service has been deactivated</string>
     <string name="remind_me_later">Remind me later</string>
     <string name="no_thanks">No, thanks</string>
+    <string name="search_preferences">Search preferences</string>
+    <string name="search_preferences_summary">Here we can choose search radius and detect interval</string>
+    <string name="auto_checkin_preferences">Auto checkin preferences</string>
+    <string name="auto_checkin_preferences_summary">Here we can enable auto check-in option and choose radius</string>
+    <string name="enable_auto_checkin_title">Enable auto check-in</string>
+    <string name="enable_auto_checkin_summary">Check-in will be triggered automatically when time came</string>
+    <string name="auto_checkin_radius_title">Auto checkin radius</string>
+    <string name="auto_checkin_radius_summary">Here we can choose radius when check-in will be triggered</string>
+    <string name="schedule_preferences">Schedule preferences</string>
+    <string name="schedule_preferences_summary">We can choose the right time to start service</string>
+    <string name="schedule_term_title">Schedule term</string>
+    <string name="schedule_term_summary">Choose the right term</string>
+    <string name="menu_history">History menu</string>
+    <string name="automatically">automatically</string>
+    <string name="action_search">Search for place</string>
+    <string name="action_clean">Clean history</string>
+    <string name="clean_checkins_history">Do you want to clean up history?</string>
 
     <string-array name="detect_time_entries">
         <item>10 min</item>
@@ -44,6 +61,30 @@
         <item>50</item>
         <item>100</item>
         <item>150</item>
+    </string-array>
+
+    <string-array name="auto_checkin_radius_entries">
+        <item>5 meters</item>
+        <item>10 meters</item>
+        <item>15 meters</item>
+    </string-array>
+
+    <string-array name="auto_checkin_radius_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+    </string-array>
+
+    <string-array name="schedule_term_entries">
+        <item>weekdays</item>
+        <item>weekend</item>
+        <item>all</item>
+    </string-array>
+
+    <string-array name="schedule_term_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 
 

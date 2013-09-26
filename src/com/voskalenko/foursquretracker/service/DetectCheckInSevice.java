@@ -10,6 +10,7 @@ package com.voskalenko.foursquretracker.service;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.location.Location;
 import android.location.LocationManager;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EService;
@@ -24,6 +25,7 @@ import com.voskalenko.foursquretracker.model.LocationEx;
 import com.voskalenko.foursquretracker.model.Venue;
 import com.voskalenko.foursquretracker.net.ApiClient;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -62,13 +64,16 @@ public class DetectCheckInSevice extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Logger.i(TAG + ": Service is running");
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        Logger.i(TAG + ": Service is running " + cal.get(Calendar.DAY_OF_WEEK));
 
-       /* Location currentLocation = currLocation.getLocation();
+        Location currentLocation = currLocation.getLocation();
         if (currentLocation != null) {
           accountManager.setLastLocation(currentLocation.getLatitude(),
                   currentLocation.getLongitude());
-        } else return;*/
+        } else return;
+
 
         if (accountManager.getDisableDetectInCurrRadius()) {
             LocationEx lastLocation = accountManager.getLastLocation();
@@ -85,8 +90,11 @@ public class DetectCheckInSevice extends IntentService {
 
             @Override
             public void onSuccess(List<Venue> venues) {
-                accountManager.setVenueList(venues);
-                getDbManager().addOrUpdVenues(venues);
+                if (venues.size() > 0) {
+                    accountManager.setVenueList(venues);
+                    getDbManager().addOrUpdVenues(venues);
+                    doCheckIn();
+                }
             }
 
             @Override
@@ -98,15 +106,24 @@ public class DetectCheckInSevice extends IntentService {
         accountManager.setLastLocation(46.631440669811500, 32.613043785095200);
         getDbManager().uncheckProposed();
 
-        if (accountManager.isSessionActual() && accountManager.isVenuesActual()) {
+        if (!accountManager.isSessionActual() && accountManager.isVenuesActual()) {
             accountManager.restoreSessionFromDB();
+            doCheckIn();
         } else if (accountManager.hasAccessToken()) {
             getApiClient().getAllVenues(callback);
         } else Logger.i("You need to pass authentication in Activity");
+    }
 
+    private void doCheckIn() {
         if (accountManager.getVenueList() != null &&
-                accountManager.getVenueList().size() != 0 ) {
-            getApiClient().getSuitableVenues(46.631440669811525, 32.613043785095215);
+                accountManager.getVenueList().size() != 0) {
+
+            if (accountManager.getAutoCheckIn()) {
+                getApiClient().CheckInProposedVenue(46.631440669811525, 32.613043785095215);
+            } else {
+                getApiClient().showProposedVenues(46.631440669811525, 32.613043785095215);
+            }
         }
     }
+
 }

@@ -15,6 +15,7 @@ public class Constants {
     public static final int DEFAULT_DETECT_RADIUS = 100;
     public static final int TOKEN_EXPIRED_TERM =  ONE_DAY_MILSECONDS;
     public static final int UPDATE_VENUES_TERM =  ONE_DAY_MILSECONDS / 2;
+    public static final int DEFAULT_AUTO_CHECKIN_RADIUS = 15;
 }
 
 

@@ -10,6 +10,8 @@ import com.googlecode.androidannotations.annotations.ViewById;
 import com.voskalenko.foursquretracker.R;
 import com.voskalenko.foursquretracker.model.Venue;
 
+import java.text.NumberFormat;
+
 @EViewGroup(R.layout.view_proposed_venue_item)
 public class ProposedVenueView extends RelativeLayout {
 
@@ -24,10 +26,14 @@ public class ProposedVenueView extends RelativeLayout {
     @ViewById(R.id.btn_mute)
     ImageButton btnMute;
     private Context context;
+    private NumberFormat nFormater;
 
     public ProposedVenueView(Context context) {
         super(context);
         this.context = context;
+        nFormater = NumberFormat.getInstance();
+        nFormater.setMinimumFractionDigits(0);
+        nFormater.setMaximumFractionDigits(3);
     }
 
     public ProposedVenueView(Context context, AttributeSet attrs) {
@@ -60,7 +66,7 @@ public class ProposedVenueView extends RelativeLayout {
             getBtnMute().setTag(venue);
             getVenueNameView().setText(venue.getName());
             getCityView().setText(venue.getLocation().getCity());
-            String distance = context.getString(R.string.distance_to_me,  venue.getLocation().getDistance());
+            String distance = context.getString(R.string.distance_to_me, nFormater.format(venue.getDistance()));
             getDistanceView().setText(distance);
         }
     }

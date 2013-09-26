@@ -1,9 +1,11 @@
 package com.voskalenko.foursquretracker.database;
 
+import android.text.TextUtils;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.api.Scope;
 import com.voskalenko.foursquretracker.Logger;
+import com.voskalenko.foursquretracker.model.CheckInsHistory;
 import com.voskalenko.foursquretracker.model.Venue;
 
 import java.sql.SQLException;
@@ -31,6 +33,29 @@ public class DBManager {
         return venueList;
     }
 
+    public List<CheckInsHistory> getCheckInsHistory(String condition) {
+        List<CheckInsHistory> checkInsList = null;
+        try {
+            if (TextUtils.isEmpty(condition)) {
+            checkInsList = getDbHelper().getCheckInsHistoryDao().queryForAll();
+            } else {
+                checkInsList = getDbHelper().getCheckInsHistoryDao()
+                        .queryBuilder().where().like("place", "%" + condition + "%").query();
+            }
+        } catch (SQLException e) {
+            Logger.e(TAG + ": Failed to get check-in's history", e);
+        }
+        return checkInsList;
+    }
+
+    public void addChickInToHistory(CheckInsHistory checkInsHistory) {
+        try {
+            getDbHelper().getCheckInsHistoryDao().create(checkInsHistory);
+        } catch (SQLException e) {
+            Logger.e(TAG + "Failed to add to check-in's history", e);
+        }
+    }
+
 
     public void addOrUpdVenues(List<Venue> venues) {
         try {
@@ -55,6 +80,14 @@ public class DBManager {
             getDbHelper().getVenuesDao().update(venue);
         } catch (SQLException e) {
             Logger.e(TAG + ": Failed to mute venue", e);
+        }
+    }
+
+    public void cleanCheckInsHistory() {
+        try {
+            getDbHelper().getCheckInsHistoryDao().deleteBuilder().delete();
+        } catch (SQLException e) {
+            Logger.e(TAG + ": Failed to clean check-ns history", e);
         }
     }
 }

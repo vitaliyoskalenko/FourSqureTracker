@@ -3,9 +3,21 @@
 <preference-headers
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <header android:fragment="com.voskalenko.foursquretracker.ui.FourSqureTrackerPreference$PrefsFragment"
-            android:icon="@drawable/ic_launcher"
-            android:title="Prefs 1"
-            android:summary="An example of some preferences." />
+    <header android:fragment="com.voskalenko.foursquretracker.ui.FourSqureTrackerPreference$SearchPreferencesFragment"
+            android:icon="@drawable/ic_action_action_search"
+            android:title="@string/search_preferences"
+            android:summary="@string/search_preferences_summary" />
+
+    <header android:fragment="com.voskalenko.foursquretracker.ui.FourSqureTrackerPreference$AutoCheckInPreferencesFragment"
+            android:icon="@drawable/ic_action_checkin"
+            android:title="@string/auto_checkin_preferences"
+            android:summary="@string/auto_checkin_preferences_summary" />
+
+    <header android:fragment="com.voskalenko.foursquretracker.ui.FourSqureTrackerPreference$SchedulePreferencesFragment"
+            android:icon="@drawable/ic_action_schedule"
+            android:title="@string/schedule_preferences"
+            android:summary="@string/schedule_preferences_summary" />
+
+
 
 </preference-headers>

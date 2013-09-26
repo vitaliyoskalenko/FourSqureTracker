@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import com.googlecode.androidannotations.annotations.*;
 import com.googlecode.androidannotations.annotations.rest.RestService;
 import com.googlecode.androidannotations.api.Scope;
@@ -17,10 +18,7 @@ import com.voskalenko.foursquretracker.callback.VerifyDialogCallback;
 import com.voskalenko.foursquretracker.database.DBManager;
 import com.voskalenko.foursquretracker.dialog.VerifyDialog;
 import com.voskalenko.foursquretracker.dialog.VerifyDialog_;
-import com.voskalenko.foursquretracker.model.CheckIn;
-import com.voskalenko.foursquretracker.model.CheckIns;
-import com.voskalenko.foursquretracker.model.Token;
-import com.voskalenko.foursquretracker.model.Venue;
+import com.voskalenko.foursquretracker.model.*;
 import com.voskalenko.foursquretracker.service.NetworkService;
 import com.voskalenko.foursquretracker.ui.ProposedVenuesActivity_;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +26,7 @@ import org.springframework.web.client.RestClientException;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +44,7 @@ public class ApiClient {
     @SystemService
     NotificationManager notificationMng;
 
+    private static final String TAG = ApiClient.class.getSimpleName();
     private static final int NOTIFICATION_ID = 1;
     private static final String VERIFY_DIALOG = "verify_dialog";
 
@@ -103,9 +103,7 @@ public class ApiClient {
     }
 
 
-
-
-    public void getSuitableVenues(double latitude, double longitude) {
+    private boolean getProposedVenues(double latitude, double longitude) {
         boolean isProposedExist = false;
         List<Venue> venueList = accountManager.getVenueList();
         int detectRadius = accountManager.getDetectRadius();
@@ -115,30 +113,58 @@ public class ApiClient {
             if (distance <= detectRadius && venue.getMuted() != Venue.FLAG_MUTED) {
                 isProposedExist = true;
                 venue.setProposed(Venue.PROPOSED_FLAG);
+                venue.setDistance(distance);
             }
         }
         if (isProposedExist) {
             dbManager.addOrUpdVenues(venueList);
-            showProposedVenues();
+        }
+
+        return isProposedExist;
+    }
+
+    public void CheckInProposedVenue(double latitude, double longitude) {
+        if (getProposedVenues(latitude, longitude)) {
+            AddCheckInCallback callback = new AddCheckInCallback() {
+                @Override
+                public void onSuccess(CheckIn checkIn) {
+                    accountManager.setDisableDetectInCurrRadius(true);
+                }
+
+                @Override
+                public void onFail(String error, Exception e) {
+                    Logger.e(error, e);
+                }
+            };
+
+            Venue venue = new Venue();
+            List<Venue> venueList = accountManager.getVenueList();
+            venue = Collections.min(venueList);
+            if (venue.getDistance() <= accountManager.getAutoCheckInRadius())
+                addCheckIn(venue.getId(), callback);
         }
     }
 
-    private void showProposedVenues() {
-        Intent notificationIntent = new Intent(ctx, ProposedVenuesActivity_.class);
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+    public void showProposedVenues(double latitude, double longitude) {
+        if (getProposedVenues(latitude, longitude)) {
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
-        Notification.Builder builder = new Notification.Builder(ctx);
-        builder.setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_action_checkin)
-                .setTicker(ctx.getString(R.string.foursqure_suitable_venues))
-                .setWhen(System.currentTimeMillis())
-                .setAutoCancel(true)
-                .setContentTitle(ctx.getString(R.string.checkin_notif_title))
-                .setContentText(ctx.getString(R.string.checkin_notif_text));
-        notificationMng.cancel(NOTIFICATION_ID);
-        notificationMng.notify(NOTIFICATION_ID, builder.build());
+            Intent notificationIntent = new Intent(ctx, ProposedVenuesActivity_.class);
+            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            notificationIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, notificationIntent, 0);
+            Notification.Builder builder = new Notification.Builder(ctx);
+            builder.setContentIntent(pendingIntent)
+                    .setSmallIcon(R.drawable.ic_notification)
+                    .setLargeIcon(BitmapFactory.decodeResource(ctx.getResources(), R.drawable.ic_notification))
+                    .setTicker(ctx.getString(R.string.foursqure_suitable_venues))
+                    .setWhen(System.currentTimeMillis())
+                    .setAutoCancel(true)
+                    .setContentTitle(ctx.getString(R.string.checkin_notif_title))
+                    .setContentText(ctx.getString(R.string.checkin_notif_text));
+            notificationMng.cancel(NOTIFICATION_ID);
+            notificationMng.notify(NOTIFICATION_ID, builder.build());
+        }
     }
 
     public void verify(Activity activity) {
@@ -178,6 +204,16 @@ public class ApiClient {
         try {
             getService().setRootUrl(Constants.API_URL);
             CheckIn checkIn = getService().addCheckIn(token, venueId, "", version).getResponse().getCheckIn();
+
+            CheckInsHistory checkInsHistory = new CheckInsHistory();
+            checkInsHistory.setAutomatically(accountManager.getAutoCheckIn());
+            checkInsHistory.setId(System.currentTimeMillis());
+            checkInsHistory.setPlace(checkIn.getVenue().getName());
+            checkInsHistory.setCheckInDate(System.currentTimeMillis());
+            checkInsHistory.setVenue(checkIn.getVenue());
+            dbManager.addChickInToHistory(checkInsHistory);
+
+            Logger.i(TAG + ": Check-in was performed");
             callback.onSuccess(checkIn);
         } catch (RestClientException e) {
             callback.onFail("Failed to like check in", e);

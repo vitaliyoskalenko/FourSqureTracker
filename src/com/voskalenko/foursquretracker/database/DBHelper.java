@@ -10,16 +10,18 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.voskalenko.foursquretracker.Logger;
+import com.voskalenko.foursquretracker.model.CheckInsHistory;
 import com.voskalenko.foursquretracker.model.Venue;
 
 @EBean(scope = Scope.Singleton)
 public class DBHelper extends OrmLiteSqliteOpenHelper {
 
-    private static final String DATABASE_NAME = "foursquretracker3.sqlite";
+    private static final String DATABASE_NAME = "foursquretracker7.sqlite";
     private static final String TAG = DBHelper.class.getSimpleName();
 
     private static final int DATABASE_VERSION = 1;
     private Dao<Venue, Integer> venuesDao = null;
+    private Dao<CheckInsHistory, Integer> checkInsHistoryDao = null;
 
     public DBHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,6 +31,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase db, ConnectionSource conn) {
         try {
             TableUtils.createTable(conn, Venue.class);
+            TableUtils.createTable(conn, CheckInsHistory.class);
         } catch (SQLException e) {
             Logger.e(TAG + ": Can't create database", e);
             throw new RuntimeException(e);
@@ -50,5 +53,16 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return venuesDao;
+    }
+
+    public Dao<CheckInsHistory, Integer> getCheckInsHistoryDao() {
+        if (checkInsHistoryDao == null) {
+            try {
+                checkInsHistoryDao = getDao(CheckInsHistory.class);
+            } catch (java.sql.SQLException e) {
+                Logger.e(e);
+            }
+        }
+        return checkInsHistoryDao;
     }
 }

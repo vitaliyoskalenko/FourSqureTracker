@@ -107,6 +107,7 @@ public class ProposedVenuesDialog extends DialogFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.checkin_notif_title)
+                .setCancelable(false)
                 .setView(layout);
         return builder.create();
     }
@@ -129,7 +130,7 @@ public class ProposedVenuesDialog extends DialogFragment
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        adapter.changeCursor(null);
+        adapter.swapCursor(null);
     }
 
     @Override

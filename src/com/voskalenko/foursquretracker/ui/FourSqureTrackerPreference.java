@@ -21,13 +21,31 @@ public class FourSqureTrackerPreference extends PreferenceActivity {
         loadHeadersFromResource(R.xml.preference_headers, target);
     }
 
-    public static class PrefsFragment extends PreferenceFragment {
+    public static class SearchPreferencesFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.preference_screen);
+            addPreferencesFromResource(R.xml.search_preference_screen);
         }
     }
+
+    public static class AutoCheckInPreferencesFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.auto_checkin_preference_screen);
+        }
+    }
+
+    public static class SchedulePreferencesFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.schedule_preference_screen);
+        }
+    }
+
+
 
     public static void start(Context context) {
         Intent intent = new Intent(context, FourSqureTrackerPreference.class);

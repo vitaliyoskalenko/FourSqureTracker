@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <ListPreference
+                    android:key="scheduleTerm"
+                    android:entries="@array/schedule_term_entries"
+                    android:summary="@string/schedule_term_summary"
+                    android:entryValues="@array/schedule_term_values"
+                    android:title="@string/schedule_term_title" />
+
+</PreferenceScreen>

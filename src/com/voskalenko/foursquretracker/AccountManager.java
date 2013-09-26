@@ -59,11 +59,11 @@ public class AccountManager {
     }
 
     public int getDetectTime() {
-        return session.detectTime().get();
+        return Integer.parseInt(session.detectTime().get());
     }
 
     public int getDetectRadius() {
-        return session.detectRadius().get();
+        return Integer.parseInt(session.detectRadius().get());
     }
 
     public void setDisableDetectInCurrRadius(boolean detect) {
@@ -110,6 +110,18 @@ public class AccountManager {
         return location;
     }
 
+    public boolean getAutoCheckIn() {
+        return session.autoCheckIn().get();
+    }
+
+    public int getAutoCheckInRadius() {
+        return Integer.parseInt(session.autoCheckInRadius().get());
+    }
+
+    public int getScheduleTerm() {
+        return Integer.parseInt(session.scheduleTerm().get());
+    }
+
     public boolean hasAccessToken() {
         return !TextUtils.isEmpty(getAccessToken());
     }
@@ -123,6 +135,13 @@ public class AccountManager {
         return !dateExpired(getVenuesUpdateDate(), Constants.UPDATE_VENUES_TERM);
     }
 
+    public void setIsDetectSvcRunning(boolean isRunning) {
+       session.isDetectSvcRunning().put(isRunning);
+    }
+
+    public boolean getIsDetectSvcRunning() {
+        return session.isDetectSvcRunning().get();
+    }
 
     private boolean dateExpired(Calendar date, int term) {
         double dateDiff = (System.currentTimeMillis() - date.getTimeInMillis()) / term;

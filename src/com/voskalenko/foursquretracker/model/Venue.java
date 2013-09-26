@@ -12,7 +12,7 @@ import com.voskalenko.foursquretracker.Logger;
 import java.io.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Venue implements Serializable, Parcelable {
+public class Venue implements Serializable, Parcelable, Comparable<Venue> {
 
     public static final String TABLE_NAME = "venue";
     public static final String FIELD_ID = "_id";
@@ -37,6 +37,7 @@ public class Venue implements Serializable, Parcelable {
     private int proposed;
     @DatabaseField
     private int muted;
+    private float distance;
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     @JsonProperty("location")
@@ -84,6 +85,14 @@ public class Venue implements Serializable, Parcelable {
 
     public void setMuted(int muted) {
         this.muted = muted;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
     }
 
     public static Venue fromCursor(Cursor cursor) {
@@ -180,5 +189,19 @@ public class Venue implements Serializable, Parcelable {
     @Override
     public String toString() {
         return "id: " + getId() + "\n name: " + getName();
+    }
+
+    @Override
+    public int compareTo(Venue venue) {
+//        if(getDistance() > venue.getDistance()) return -1;
+//        if(getDistance() == venue.getDistance()) return 0;
+//        return 1;
+        if (venue.getProposed() == 0 ||  getProposed() == 0)
+            return -1;
+        if (getDistance() > venue.getDistance())
+            return 1;
+        else if (getDistance() < venue.getDistance())
+            return -1;
+        return 0;
     }
 }

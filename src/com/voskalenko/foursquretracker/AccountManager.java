@@ -1,3 +1,11 @@
+/*
+ * @(#)AccountManager.java  1.0 2013/09/21
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker;
 
 import android.text.TextUtils;
@@ -5,21 +13,27 @@ import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.sharedpreferences.Pref;
 import com.googlecode.androidannotations.api.Scope;
-import com.voskalenko.foursquretracker.database.DBManager;
+import com.voskalenko.foursquretracker.database.DatabaseManager;
 import com.voskalenko.foursquretracker.model.LocationEx;
 import com.voskalenko.foursquretracker.model.Venue;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
+/**
+ * Class provides getSession() information. Work with SessionEx interface
+ *
+ * @author Vitaly Oskalenko
+ * @version 1.0 21 Sep 2013
+ */
 
 @EBean(scope = Scope.Singleton)
 public class AccountManager {
 
     @Bean
-    DBManager dbManager;
+    DatabaseManager dbManager;
     @Pref
     SessionPref_ session;
 
@@ -27,26 +41,30 @@ public class AccountManager {
 
     private List<Venue> venueList;
 
-    public DBManager getDbManager() {
+    private DatabaseManager getDbManager() {
         return dbManager;
+    }
+
+    private SessionPref_ getSession() {
+        return session;
     }
 
     public Calendar getDateCreation() {
         Calendar dateToken = Calendar.getInstance();
-        dateToken.setTime(new Date(session.dateCreation().get()));
+        dateToken.setTimeInMillis(getSession().dateCreation().get());
         return dateToken;
     }
 
     public void setDateCreation(long dateCreation) {
-        session.dateCreation().put(dateCreation);
+        getSession().dateCreation().put(dateCreation);
     }
 
     public void setAccessToken(String accessToken) {
-        session.accessToken().put(accessToken);
+        getSession().accessToken().put(accessToken);
     }
 
     public String getAccessToken() {
-        return session.accessToken().get();
+        return getSession().accessToken().get();
     }
 
 
@@ -59,29 +77,29 @@ public class AccountManager {
     }
 
     public int getDetectTime() {
-        return Integer.parseInt(session.detectTime().get());
+        return Integer.parseInt(getSession().detectTime().get());
     }
 
     public int getDetectRadius() {
-        return Integer.parseInt(session.detectRadius().get());
+        return Integer.parseInt(getSession().detectRadius().get());
     }
 
     public void setDisableDetectInCurrRadius(boolean detect) {
-        session.disableDetectInCurrRadius().put(detect);
+        getSession().disableDetectInCurrRadius().put(detect);
     }
 
     public boolean getDisableDetectInCurrRadius() {
-        return session.disableDetectInCurrRadius().get();
+        return getSession().disableDetectInCurrRadius().get();
     }
 
     private Calendar getVenuesUpdateDate() {
         Calendar updateDate = Calendar.getInstance();
-        updateDate.setTimeInMillis(session.venuesUpdateDate().get());
+        updateDate.setTimeInMillis(getSession().venuesUpdateDate().get());
         return updateDate;
     }
 
     public void setVenuesUpdateDate(long updateDate) {
-          session.venuesUpdateDate().put(updateDate);
+        getSession().venuesUpdateDate().put(updateDate);
     }
 
     public void setLastLocation(double latitude, double longitude) {
@@ -89,7 +107,7 @@ public class AccountManager {
         try {
             json.put(LocationEx.FIELD_LATITUDE, latitude);
             json.put(LocationEx.FIELD_LONGITUDE, longitude);
-            session.lastLocation().put(json.toString());
+            getSession().lastLocation().put(json.toString());
         } catch (JSONException e) {
             Logger.e(TAG + ": setLastLocation JSON error", e);
         }
@@ -97,7 +115,7 @@ public class AccountManager {
 
     public LocationEx getLastLocation() {
         LocationEx location = new LocationEx();
-        String content = session.lastLocation().get();
+        String content = getSession().lastLocation().get();
         if (!TextUtils.isEmpty(content)) {
             try {
                 JSONObject json = new JSONObject(content);
@@ -111,15 +129,11 @@ public class AccountManager {
     }
 
     public boolean getAutoCheckIn() {
-        return session.autoCheckIn().get();
+        return getSession().autoCheckIn().get();
     }
 
     public int getAutoCheckInRadius() {
-        return Integer.parseInt(session.autoCheckInRadius().get());
-    }
-
-    public int getScheduleTerm() {
-        return Integer.parseInt(session.scheduleTerm().get());
+        return Integer.parseInt(getSession().autoCheckInRadius().get());
     }
 
     public boolean hasAccessToken() {
@@ -136,11 +150,11 @@ public class AccountManager {
     }
 
     public void setIsDetectSvcRunning(boolean isRunning) {
-       session.isDetectSvcRunning().put(isRunning);
+        getSession().isDetectSvcRunning().put(isRunning);
     }
 
     public boolean getIsDetectSvcRunning() {
-        return session.isDetectSvcRunning().get();
+        return getSession().isDetectSvcRunning().get();
     }
 
     private boolean dateExpired(Calendar date, int term) {
@@ -150,5 +164,21 @@ public class AccountManager {
 
     public void restoreSessionFromDB() {
         setVenueList(getDbManager().getVenues());
+    }
+
+    public boolean[] getScheduleDays() {
+        boolean[] scheduleDays = new boolean[7];
+        switch (Integer.parseInt(getSession().scheduleTerm().get())) {
+            case 0:
+                scheduleDays = new boolean[]{false, true, true, true, true, true, false};
+                break;
+            case 1:
+                scheduleDays = new boolean[]{true, false, false, false, false, false, true};
+                break;
+            case 2:
+                scheduleDays = new boolean[]{true, true, true, true, true, true, true};
+                break;
+        }
+        return scheduleDays;
     }
 }

@@ -1,3 +1,11 @@
+/*
+ * @(#)DatabaseManager.java  1.0 2013/09/11
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.database;
 
 import android.text.TextUtils;
@@ -12,14 +20,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 @EBean(scope = Scope.Singleton)
-public class DBManager {
+public class DatabaseManager {
 
     @Bean
-    DBHelper dbHelper;
+    DatabaseHelper dbHelper;
 
-    private static final String TAG = DBManager.class.getSimpleName();
+    private static final String TAG = DatabaseManager.class.getSimpleName();
 
-    private DBHelper getDbHelper() {
+    private DatabaseHelper getDbHelper() {
         return dbHelper;
     }
 

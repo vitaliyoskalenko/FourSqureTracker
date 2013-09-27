@@ -1,3 +1,11 @@
+/*
+ * @(#)VerifyDialog.java  1.0 2013/09/11
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.dialog;
 
 import android.app.DialogFragment;
@@ -13,6 +21,13 @@ import com.googlecode.androidannotations.annotations.ViewById;
 import com.voskalenko.foursquretracker.Constants;
 import com.voskalenko.foursquretracker.R;
 import com.voskalenko.foursquretracker.callback.VerifyDialogCallback;
+
+/**
+ * Dialog shows FourSqure website for to authenticate and getting token
+ *
+ * @author Vitaly Oskalenko
+ * @version 1.0 11 Sep 2013
+ */
 
 @EFragment(R.layout.dialog_verify)
 public class VerifyDialog extends DialogFragment {

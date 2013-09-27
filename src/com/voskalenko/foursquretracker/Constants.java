@@ -1,3 +1,12 @@
+
+/*
+ * @(#)Constants.java  1.0 2013/09/11
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker;
 
 public class Constants {
@@ -13,9 +22,9 @@ public class Constants {
     private static final int ONE_DAY_MILSECONDS = 24 * 60 * 60 * 1000;
     public static final int DEFAULT_DETECT_TIME = 7 * 1000;
     public static final int DEFAULT_DETECT_RADIUS = 100;
+    public static final int DEFAULT_AUTO_CHECKIN_RADIUS = 15;
     public static final int TOKEN_EXPIRED_TERM =  ONE_DAY_MILSECONDS;
     public static final int UPDATE_VENUES_TERM =  ONE_DAY_MILSECONDS / 2;
-    public static final int DEFAULT_AUTO_CHECKIN_RADIUS = 15;
 }
 
 

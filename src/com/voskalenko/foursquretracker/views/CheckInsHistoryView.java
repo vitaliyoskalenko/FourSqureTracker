@@ -1,3 +1,11 @@
+/*
+ * @(#)CheckInsHistoryView.java  1.0 2013/09/21
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.views;
 
 import android.content.Context;

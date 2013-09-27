@@ -1,20 +1,31 @@
+/*
+ * @(#)LocationManagerEx.java  1.0 2013/09/20
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import com.googlecode.androidannotations.annotations.AfterInject;
 import com.googlecode.androidannotations.annotations.EBean;
-import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.annotations.SystemService;
+
+/**
+ * Obtain the coordinates of the location service (GPS)
+ *
+ * @author Vitaly Oskalenko
+ * @version 1.0 20 Sep 2013
+ */
 
 @EBean
 public class LocationManagerEx implements LocationListener {
 
-    private boolean isGPSEnabled = false;
-    private boolean isNetworkEnabled = false;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
@@ -22,17 +33,14 @@ public class LocationManagerEx implements LocationListener {
 
     private Location location;
 
-    @RootContext
-    Context ctx;
-
     @SystemService
     LocationManager locationManager;
 
     @AfterInject
     public void init() {
         try {
-            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
             if (isGPSEnabled)
                 getLocation(LocationManager.GPS_PROVIDER);

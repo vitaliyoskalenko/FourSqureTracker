@@ -1,11 +1,10 @@
 /*
- * @(#)AppController.java  1.0 2013/09/11
+ * @(#)FourSqureTrackerHelper.java  1.0 2013/09/11
  *
  * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net 
  * All rights for the program belong to the postindustria company 
  * and are its intellectual property
  */
-
 
 package com.voskalenko.foursquretracker;
 
@@ -14,6 +13,13 @@ import android.location.Location;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.SystemService;
 import com.voskalenko.foursquretracker.service.DetectCheckInSevice_;
+
+/**
+ * Class provides additional functionality
+ *
+ * @author Vitaly Oskalenko
+ * @version 1.0 11 Sep 2013
+ */
 
 @EBean
 public class FourSqureTrackerHelper {
@@ -27,7 +33,7 @@ public class FourSqureTrackerHelper {
         }
         return false;
     }
-
+//To get distance between two location
     public static float distanceBetween (double currentLatitude, double currentLongitude, double venueLatitude, double venueLongitude) {
         Location currentLocation = new Location("");
         currentLocation.setLatitude(currentLatitude);

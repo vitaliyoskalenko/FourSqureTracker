@@ -20,7 +20,7 @@ import com.voskalenko.foursquretracker.FourSqureTrackerHelper;
 import com.voskalenko.foursquretracker.LocationManagerEx;
 import com.voskalenko.foursquretracker.Logger;
 import com.voskalenko.foursquretracker.callback.AllVenueCallback;
-import com.voskalenko.foursquretracker.database.DBManager;
+import com.voskalenko.foursquretracker.database.DatabaseManager;
 import com.voskalenko.foursquretracker.model.LocationEx;
 import com.voskalenko.foursquretracker.model.Venue;
 import com.voskalenko.foursquretracker.net.ApiClient;
@@ -34,19 +34,23 @@ import java.util.List;
  * @author Vitaly Oskalenko
  * @version 1.0 11 Sep 2013
  */
+
 @EService
 public class DetectCheckInSevice extends IntentService {
 
-    //@Bean
+    @Bean
     LocationManagerEx currLocation;
     @Bean
     ApiClient apiClient;
     @Bean
-    DBManager dbManager;
+    DatabaseManager dbManager;
     @Bean
     AccountManager accountManager;
     @SystemService
     LocationManager locationManager;
+
+    private double latitude;
+    private double longitude;
 
     private static final String TAG = DetectCheckInSevice.class.getSimpleName();
 
@@ -54,44 +58,56 @@ public class DetectCheckInSevice extends IntentService {
         super("DetectCheckInSvc_");
     }
 
-    public DBManager getDbManager() {
+    private DatabaseManager getDbManager() {
         return dbManager;
     }
 
-    public ApiClient getApiClient() {
+    private ApiClient getApiClient() {
         return apiClient;
+    }
+
+    private AccountManager getAccountManager() {
+        return accountManager;
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        Logger.i(TAG + ": Service is running " + cal.get(Calendar.DAY_OF_WEEK));
+//        Specify which days of the service will be activated
+        Calendar calendar = Calendar.getInstance();
+        boolean[] scheduleDays = getAccountManager().getScheduleDays();
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        if (scheduleDays[day - 1]) {
+            return;
+        }
 
+//        Obtain the coordinates of the location service (GPS)
         Location currentLocation = currLocation.getLocation();
+        latitude = currentLocation.getLatitude();
+        longitude = currentLocation.getLongitude();
         if (currentLocation != null) {
-          accountManager.setLastLocation(currentLocation.getLatitude(),
-                  currentLocation.getLongitude());
+            getAccountManager().setLastLocation(currentLocation.getLatitude(),
+                    currentLocation.getLongitude());
         } else return;
 
+//        Block the launch until we leave from a given radius
+        if (getAccountManager().getDisableDetectInCurrRadius()) {
+            LocationEx lastLocation = getAccountManager().getLastLocation();
 
-        if (accountManager.getDisableDetectInCurrRadius()) {
-            LocationEx lastLocation = accountManager.getLastLocation();
-
-            int detectRadius = accountManager.getDetectRadius();
+            int detectRadius = getAccountManager().getDetectRadius();
             float distance = FourSqureTrackerHelper.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(),
-                    40.631440669811525, 32.613043785095215);
+                    latitude, longitude);
             if (distance > detectRadius)
-                accountManager.setDisableDetectInCurrRadius(false);
+                getAccountManager().setDisableDetectInCurrRadius(false);
             else return;
         }
 
+//        Getting all the venues where the user has been
         AllVenueCallback callback = new AllVenueCallback() {
 
             @Override
             public void onSuccess(List<Venue> venues) {
                 if (venues.size() > 0) {
-                    accountManager.setVenueList(venues);
+                    getAccountManager().setVenueList(venues);
                     getDbManager().addOrUpdVenues(venues);
                     doCheckIn();
                 }
@@ -103,27 +119,28 @@ public class DetectCheckInSevice extends IntentService {
             }
         };
 
-        accountManager.setLastLocation(46.631440669811500, 32.613043785095200);
+//        Set the latest location for the future comparison
+        getAccountManager().setLastLocation(latitude, longitude);
         getDbManager().uncheckProposed();
 
-        if (!accountManager.isSessionActual() && accountManager.isVenuesActual()) {
-            accountManager.restoreSessionFromDB();
+        if (getAccountManager().isSessionActual() && getAccountManager().isVenuesActual()) {
+            getAccountManager().restoreSessionFromDB();
             doCheckIn();
-        } else if (accountManager.hasAccessToken()) {
+        } else if (getAccountManager().hasAccessToken()) {
             getApiClient().getAllVenues(callback);
         } else Logger.i("You need to pass authentication in Activity");
     }
 
+//    Proposed make check-in or run in automatically mode
     private void doCheckIn() {
-        if (accountManager.getVenueList() != null &&
-                accountManager.getVenueList().size() != 0) {
+        if (getAccountManager().getVenueList() != null &&
+                getAccountManager().getVenueList().size() != 0) {
 
-            if (accountManager.getAutoCheckIn()) {
-                getApiClient().CheckInProposedVenue(46.631440669811525, 32.613043785095215);
+            if (getAccountManager().getAutoCheckIn()) {
+                getApiClient().CheckInProposedVenue(latitude, longitude);
             } else {
-                getApiClient().showProposedVenues(46.631440669811525, 32.613043785095215);
+                getApiClient().showProposedVenues(latitude, longitude);
             }
         }
     }
-
 }

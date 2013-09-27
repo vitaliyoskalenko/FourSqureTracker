@@ -1,3 +1,11 @@
+/*
+ * @(#)HomeActivity.java  1.0 2013/09/21
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.ui;
 
 import com.googlecode.androidannotations.annotations.AfterInject;
@@ -7,7 +15,6 @@ import com.voskalenko.foursquretracker.R;
 
 
 @EActivity
-
 public class HomeActivity extends BaseActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();

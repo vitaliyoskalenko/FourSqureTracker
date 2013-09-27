@@ -20,6 +20,7 @@ public class Venue implements Serializable, Parcelable, Comparable<Venue> {
     public static final String FIELD_PROPOSED = "proposed";
     public static final String FIELD_LOCATION = "location";
     public static final String FIELD_MUTED = "muted";
+    public static final String FIELD_DISTANCE = "distance";
     public static final int PROPOSED_FLAG = 1;
     public static final int FLAG_MUTED = 1;
 
@@ -37,6 +38,7 @@ public class Venue implements Serializable, Parcelable, Comparable<Venue> {
     private int proposed;
     @DatabaseField
     private int muted;
+    @DatabaseField
     private float distance;
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
@@ -98,7 +100,6 @@ public class Venue implements Serializable, Parcelable, Comparable<Venue> {
     public static Venue fromCursor(Cursor cursor) {
         Venue venue = null;
         if (cursor != null) {
-            cursor.moveToFirst();
             if (cursor.getCount() > 0) {
                 venue = new Venue();
 
@@ -110,6 +111,11 @@ public class Venue implements Serializable, Parcelable, Comparable<Venue> {
                 int nameIndex = cursor.getColumnIndex(FIELD_NAME);
                 if (nameIndex >= 0) {
                     venue.setName(cursor.getString(nameIndex));
+                }
+
+                int distanceIndex = cursor.getColumnIndex(FIELD_DISTANCE);
+                if (nameIndex >= 0) {
+                    venue.setDistance(cursor.getFloat(distanceIndex));
                 }
 
                 int locationIndex = cursor.getColumnIndex(FIELD_LOCATION);

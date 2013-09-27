@@ -1,3 +1,11 @@
+/*
+ * @(#)ProposedVenuesDialog.java  1.0 2013/09/11
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.dialog;
 
 import android.app.*;
@@ -15,14 +23,22 @@ import com.googlecode.androidannotations.annotations.UiThread;
 import com.voskalenko.foursquretracker.AccountManager;
 import com.voskalenko.foursquretracker.Logger;
 import com.voskalenko.foursquretracker.R;
+import com.voskalenko.foursquretracker.adapter.ProposedVenuesAdapter;
 import com.voskalenko.foursquretracker.callback.AddCheckInCallback;
 import com.voskalenko.foursquretracker.callback.DialogCallback;
 import com.voskalenko.foursquretracker.callback.ProposedVenuesCallback;
-import com.voskalenko.foursquretracker.database.DBManager;
+import com.voskalenko.foursquretracker.database.DatabaseManager;
 import com.voskalenko.foursquretracker.database.ProposedVenueProvider;
 import com.voskalenko.foursquretracker.model.CheckIn;
 import com.voskalenko.foursquretracker.model.Venue;
 import com.voskalenko.foursquretracker.net.ApiClient;
+
+/**
+ * Dialog shows all suitable places for check-in
+ *
+ * @author Vitaly Oskalenko
+ * @version 1.0 11 Sep 2013
+ */
 
 @EFragment
 public class ProposedVenuesDialog extends DialogFragment
@@ -31,29 +47,37 @@ public class ProposedVenuesDialog extends DialogFragment
     @SystemService
     LayoutInflater inflater;
     @Bean
-    VenuesAdapter adapter;
+    ProposedVenuesAdapter adapter;
     @Bean
     ApiClient apiClient;
     @Bean
     AccountManager accountManager;
     @Bean
-    DBManager dbManager;
+    DatabaseManager dbManager;
 
     private static final int LOADER_ID = 0;
 
-    private ProposedVenuesCallback callback;
-    private AddCheckInCallback checkInCallbackcallback;
     private ProgressDialog progressDlg;
 
-    public ApiClient getApiClient() {
+    private ApiClient getApiClient() {
         return apiClient;
+    }
+
+    private AccountManager getAccountManager() {
+        return accountManager;
+    }
+
+    private DatabaseManager getDbManager() {
+        return dbManager;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         progressDlg = new ProgressDialog(getActivity());
+        progressDlg.setTitle(R.string.wait_for_moment);
+
         getLoaderManager().initLoader(LOADER_ID, null, this);
-        checkInCallbackcallback = new AddCheckInCallback() {
+        final AddCheckInCallback checkInCallbackcallback = new AddCheckInCallback() {
 
             @Override
             public void onSuccess(CheckIn checkIn) {
@@ -68,7 +92,7 @@ public class ProposedVenuesDialog extends DialogFragment
         };
 
 
-        callback = new ProposedVenuesCallback() {
+        final ProposedVenuesCallback proposedVenuesCallback = new ProposedVenuesCallback() {
 
             @Override
             public void onSuccess(Venue venue, int id) {
@@ -79,7 +103,7 @@ public class ProposedVenuesDialog extends DialogFragment
                         break;
                     case R.id.btn_mute:
                         venue.setMuted(Venue.FLAG_MUTED);
-                        dbManager.setMuted(venue);
+                        getDbManager().setMuted(venue);
                         adapter.notifyDataSetChanged();
                         progressDlg.hide();
                         break;
@@ -91,8 +115,6 @@ public class ProposedVenuesDialog extends DialogFragment
             }
         };
 
-        progressDlg.setTitle(R.string.wait_for_moment);
-
         final View layout = inflater.inflate(R.layout.dialog_proposed_venues_list, null);
         final ListView venuesList = (ListView) layout.findViewById(R.id.list_venues);
         final Button btnRemindLater = (Button) layout.findViewById(R.id.btn_remindLater);
@@ -101,13 +123,12 @@ public class ProposedVenuesDialog extends DialogFragment
         btnRemindLater.setOnClickListener(this);
         btnNoThanks.setOnClickListener(this);
 
-        adapter.setCheckInCallback(callback);
+        adapter.setCheckInCallback(proposedVenuesCallback);
         venuesList.setOnItemClickListener(this);
         venuesList.setAdapter(adapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.checkin_notif_title)
-                .setCancelable(false)
                 .setView(layout);
         return builder.create();
     }
@@ -140,7 +161,7 @@ public class ProposedVenuesDialog extends DialogFragment
                 close();
                 break;
             case R.id.btn_no_thanks:
-                accountManager.setDisableDetectInCurrRadius(true);
+                getAccountManager().setDisableDetectInCurrRadius(true);
                 close();
                 break;
         }

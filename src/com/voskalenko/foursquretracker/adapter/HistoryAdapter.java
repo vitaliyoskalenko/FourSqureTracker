@@ -1,4 +1,12 @@
-package com.voskalenko.foursquretracker.ui;
+/*
+ * @(#)HistoryAdapter.java  1.0 2013/09/21
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
+package com.voskalenko.foursquretracker.adapter;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -11,7 +19,7 @@ import com.googlecode.androidannotations.annotations.AfterInject;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.RootContext;
-import com.voskalenko.foursquretracker.database.DBManager;
+import com.voskalenko.foursquretracker.database.DatabaseManager;
 import com.voskalenko.foursquretracker.model.CheckInsHistory;
 import com.voskalenko.foursquretracker.views.CheckInsHistoryView;
 import com.voskalenko.foursquretracker.views.CheckInsHistoryView_;
@@ -22,28 +30,27 @@ import java.util.List;
 public class HistoryAdapter extends BaseAdapter implements Filterable {
 
     @Bean
-    DBManager dbManager;
+    DatabaseManager dbManager;
     @RootContext
     Context context;
 
     private List<CheckInsHistory> historyList;
     private final Filter filter = new Filter() {
 
-    @AfterInject
-    void init() {
-        adapterRefresh();
-        historyList = dbManager.getCheckInsHistory(null);
-    }
-
+        @AfterInject
+        void init() {
+            adapterRefresh();
+            historyList = getDbManager().getCheckInsHistory(null);
+        }
 
         @Override
         protected FilterResults performFiltering(CharSequence condition) {
             FilterResults results = new FilterResults();
             List<CheckInsHistory> checkInsHistories;
             if (!TextUtils.isEmpty(condition)) {
-                checkInsHistories = dbManager.getCheckInsHistory((String) condition);
+                checkInsHistories = getDbManager().getCheckInsHistory((String) condition);
             } else {
-                checkInsHistories = dbManager.getCheckInsHistory(null);
+                checkInsHistories = getDbManager().getCheckInsHistory(null);
             }
 
             results.values = checkInsHistories;
@@ -55,7 +62,7 @@ public class HistoryAdapter extends BaseAdapter implements Filterable {
         @Override
         protected void publishResults(CharSequence condition, FilterResults filterResults) {
             if (filterResults != null) {
-                historyList = (List<CheckInsHistory>)filterResults.values;
+                historyList = (List<CheckInsHistory>) filterResults.values;
                 notifyDataSetChanged();
             }
         }
@@ -69,7 +76,7 @@ public class HistoryAdapter extends BaseAdapter implements Filterable {
     }
 
     private void adapterRefresh() {
-        historyList = dbManager.getCheckInsHistory(null);
+        historyList = getDbManager().getCheckInsHistory(null);
     }
 
 
@@ -95,7 +102,7 @@ public class HistoryAdapter extends BaseAdapter implements Filterable {
             convertView = CheckInsHistoryView_.build(context);
         }
 
-        ((CheckInsHistoryView)convertView).setData(historyList.get(position));
+        ((CheckInsHistoryView) convertView).setData(historyList.get(position));
 
         return convertView;
     }
@@ -103,6 +110,10 @@ public class HistoryAdapter extends BaseAdapter implements Filterable {
     @Override
     public Filter getFilter() {
         return filter;
+    }
+
+    private DatabaseManager getDbManager() {
+        return dbManager;
     }
 }
 

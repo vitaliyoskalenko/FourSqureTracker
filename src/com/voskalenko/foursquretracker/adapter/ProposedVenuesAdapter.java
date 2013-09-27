@@ -1,4 +1,12 @@
-package com.voskalenko.foursquretracker.dialog;
+/*
+ * @(#)ProposedVenuesAdapter.java  1.0 2013/09/11
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
+package com.voskalenko.foursquretracker.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -17,13 +25,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EBean
-public class VenuesAdapter extends CursorAdapter implements View.OnClickListener {
+public class ProposedVenuesAdapter extends CursorAdapter implements View.OnClickListener {
+
 
     private ProposedVenuesCallback callback;
     private int idIndex;
     private Map<String, Map.Entry<Boolean, Boolean>> checkedButtonList;
 
-    public VenuesAdapter(Context context) {
+    public ProposedVenuesAdapter(Context context) {
         super(context, null, false);
         checkedButtonList = new HashMap<String, Map.Entry<Boolean, Boolean>>();
     }
@@ -38,7 +47,6 @@ public class VenuesAdapter extends CursorAdapter implements View.OnClickListener
         view.getBtnCheckIn().setOnClickListener(this);
         view.getBtnMute().setOnClickListener(this);
 
-        int idIndex = cursor.getColumnIndex(Venue.FIELD_ID);
         return view;
 
     }

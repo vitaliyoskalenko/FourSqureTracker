@@ -1,3 +1,11 @@
+/*
+ * @(#)HomeFragment.java  1.0 2013/09/21
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.ui;
 
 import android.content.Intent;
@@ -24,28 +32,30 @@ public class HomeFragment extends BaseFragment {
     static final boolean FLAG_STOP = true;
     static final boolean FLAG_START = false;
 
-    @AfterViews
-    void initViews() {
-        btnSwitchOn.setChecked(accountManager.getIsDetectSvcRunning());
-        if (accountManager.getIsDetectSvcRunning()) {
-            startOrStopSchedule(FLAG_STOP);
-        }
+    private AccountManager getAccountManager() {
+        return accountManager;
     }
 
-    @AfterInject
-    void init() {
+    @AfterViews
+    void initViews() {
+        btnSwitchOn.setChecked(getAccountManager().getIsDetectSvcRunning());
+        switchButtonDrawable();
+        if (getAccountManager().getIsDetectSvcRunning()) {
+            startOrStopSchedule(FLAG_STOP);
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!accountManager.isSessionActual())
+        if (!getAccountManager().isSessionActual())
             getApiClient().verify(getActivity());
     }
 
     @Click(R.id.btn_switch_on)
     void onClick() {
+        switchButtonDrawable();
         Toast.makeText(getActivity(), btnSwitchOn.isChecked() ?
                 R.string.service_activated : R.string.service_deactivated, Toast.LENGTH_SHORT).show();
     }
@@ -53,7 +63,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        accountManager.setIsDetectSvcRunning(btnSwitchOn.isChecked());
+        getAccountManager().setIsDetectSvcRunning(btnSwitchOn.isChecked());
         if (btnSwitchOn.isChecked()) {
             startOrStopSchedule(FLAG_START);
         }
@@ -63,5 +73,8 @@ public class HomeFragment extends BaseFragment {
         Intent intent = new Intent(getActivity(), ScheduleReceiver_.class);
         intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, scheduleFlag);
         getActivity().sendBroadcast(intent);
+    }
+    private void switchButtonDrawable() {
+        btnSwitchOn.setBackgroundResource(btnSwitchOn.isChecked() ? R.drawable.checkinon : R.drawable.checkinoff);
     }
 }

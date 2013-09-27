@@ -1,3 +1,11 @@
+/*
+ * @(#)ProposedVenueProvider.java  1.0 2013/09/21
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.database;
 
 import android.content.ContentProvider;
@@ -29,7 +37,11 @@ public class ProposedVenueProvider extends ContentProvider {
     }
 
     @Bean
-    DBHelper dbHelper;
+    DatabaseHelper dbHelper;
+
+    private DatabaseHelper getDbHelper() {
+        return dbHelper;
+    }
 
     @Override
     public boolean onCreate() {
@@ -38,18 +50,18 @@ public class ProposedVenueProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] pProjection, String pSelection, String[] pSelectionArgs, String pSortorder) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbHelper().getReadableDatabase();
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         switch (uriMatcher.match(uri)) {
             case URI_PROPOSED_VENUE:
                 queryBuilder.setTables(Venue.TABLE_NAME);
-                queryBuilder.appendWhere(Venue.FIELD_MUTED + " = 0 and " + Venue.FIELD_PROPOSED + " = 1" );
+                queryBuilder.appendWhere(Venue.FIELD_MUTED + " = 0 and " + Venue.FIELD_PROPOSED + " = 1");
                 break;
             default:
                 throw new UnsupportedOperationException();
         }
-        Cursor cur = queryBuilder.query(db, pProjection, pSelection, pSelectionArgs, null, null, pSortorder, null);
-        return cur;
+
+        return queryBuilder.query(db, pProjection, pSelection, pSelectionArgs, null, null, pSortorder, null);
     }
 
     @Override

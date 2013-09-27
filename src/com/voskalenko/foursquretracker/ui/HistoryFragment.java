@@ -1,3 +1,11 @@
+/*
+ * @(#)HistoryFragment.java  1.0 2013/09/21
+ *
+ * Copyright (C) 2013 Vitaly Oskalenko, oskalenkoVit@ukr.net
+ * All rights for the program belong to the postindustria company
+ * and are its intellectual property
+ */
+
 package com.voskalenko.foursquretracker.ui;
 
 import android.app.AlertDialog;
@@ -10,6 +18,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import com.googlecode.androidannotations.annotations.*;
 import com.voskalenko.foursquretracker.R;
+import com.voskalenko.foursquretracker.adapter.HistoryAdapter;
 
 @EFragment(R.layout.fragment_history)
 @OptionsMenu(R.menu.fragment_history_menu)
@@ -17,7 +26,6 @@ public class HistoryFragment extends BaseFragment {
 
     @ViewById(R.id.list_history)
     ListView listHistory;
-
     @Bean
     HistoryAdapter adapter;
 

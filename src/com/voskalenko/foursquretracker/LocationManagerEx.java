@@ -65,7 +65,7 @@ public class LocationManagerEx implements LocationListener {
     }
 
     public Location getLocation() {
-        return location;
+        return location != null ? location : new Location("");
     }
 
     @Override

@@ -53,8 +53,9 @@ public class ScheduleReceiver extends BroadcastReceiver {
         if (stopSchedule) {
             alarmManager.cancel(pIntent);
         } else {
+            ctx.startService(intent);
             alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime() + 10000/*accountManager.getDetectTime()*/, 10000/* getAccountManager().getDetectTime()*/, pIntent);
+                    SystemClock.elapsedRealtime() + accountManager.getDetectTime(), getAccountManager().getDetectTime(), pIntent);
         }
     }
 }

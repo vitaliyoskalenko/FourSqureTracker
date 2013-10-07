@@ -12,6 +12,7 @@ import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -119,19 +120,16 @@ public class ProposedVenuesDialog extends DialogFragment
         progressDlg = new ProgressDialog(getActivity());
         progressDlg.setTitle(R.string.wait_for_moment);
 
-        getLoaderManager().initLoader(LOADER_ID, null, this);
-
         adapter.setCheckInCallback(proposedVenuesCallback);
         venuesList.setOnItemClickListener(this);
         venuesList.setAdapter(adapter);
         getDialog().setTitle(R.string.checkin_notif_title);
-        /*getDialog().setOnCancelListener(new Dialog.OnCancelListener() {
+    }
 
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                close();
-            }
-        });*/
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        close();
+        super.onCancel(dialog);
     }
 
     @Click(R.id.btn_remindLater)
@@ -160,7 +158,7 @@ public class ProposedVenuesDialog extends DialogFragment
     @Override
     public void onResume() {
         super.onResume();
-//        getLoaderManager().restartLoader(LOADER_ID, null, this);
+        getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
 

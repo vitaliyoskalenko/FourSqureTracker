@@ -164,7 +164,7 @@ public class ApiClient {
             List<Venue> venueList = getAccountManager().getVenueList();
             venue = Collections.min(venueList);
 
-            if (venue.getDistance() <= 200/*getAccountManager().getAutoCheckInRadius()*/)
+            if (venue.getDistance() <= getAccountManager().getAutoCheckInRadius())
                 addCheckIn(venue.getId(), callback);
         }
     }
@@ -173,7 +173,7 @@ public class ApiClient {
         if (getProposedVenues(latitude, longitude)) {
 
             Intent notificationIntent = new Intent(context, ProposedVenuesActivity_.class);
-            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);

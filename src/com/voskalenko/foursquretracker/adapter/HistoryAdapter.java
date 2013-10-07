@@ -7,6 +7,7 @@
  */
 
 package com.voskalenko.foursquretracker.adapter;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,7 +23,6 @@ import com.voskalenko.foursquretracker.database.DatabaseManager;
 import com.voskalenko.foursquretracker.model.CheckInsHistory;
 import com.voskalenko.foursquretracker.views.CheckInsHistoryView;
 import com.voskalenko.foursquretracker.views.CheckInsHistoryView_;
-
 
 import java.util.List;
 

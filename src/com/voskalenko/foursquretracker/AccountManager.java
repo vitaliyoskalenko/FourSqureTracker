@@ -35,7 +35,7 @@ public class AccountManager {
     @Bean
     DatabaseManager dbManager;
     @Pref
-    SessionPref_ session;
+    SessionEx_ session;
 
     private static final String TAG = AccountManager.class.getSimpleName();
 
@@ -45,18 +45,18 @@ public class AccountManager {
         return dbManager;
     }
 
-    private SessionPref_ getSession() {
+    private SessionEx_ getSession() {
         return session;
     }
 
     public Calendar getTokenCreationDate() {
         Calendar creationDate = Calendar.getInstance();
-        creationDate.setTimeInMillis(getSession().dateCreation().get());
+        creationDate.setTimeInMillis(getSession().tokenCreationDate().get());
         return creationDate;
     }
 
     public void setTokenCreationDate(long creationDate) {
-        getSession().dateCreation().put(creationDate);
+        getSession().tokenCreationDate().put(creationDate);
     }
 
     public void setAccessToken(String accessToken) {

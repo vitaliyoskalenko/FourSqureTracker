@@ -49,14 +49,14 @@ public class AccountManager {
         return session;
     }
 
-    public Calendar getDateCreation() {
-        Calendar dateToken = Calendar.getInstance();
-        dateToken.setTimeInMillis(getSession().dateCreation().get());
-        return dateToken;
+    public Calendar getTokenCreationDate() {
+        Calendar creationDate = Calendar.getInstance();
+        creationDate.setTimeInMillis(getSession().dateCreation().get());
+        return creationDate;
     }
 
-    public void setDateCreation(long dateCreation) {
-        getSession().dateCreation().put(dateCreation);
+    public void setTokenCreationDate(long creationDate) {
+        getSession().dateCreation().put(creationDate);
     }
 
     public void setAccessToken(String accessToken) {
@@ -142,7 +142,7 @@ public class AccountManager {
 
 
     public boolean isSessionActual() {
-        return !dateExpired(getDateCreation(), Constants.TOKEN_EXPIRED_TERM);
+        return !dateExpired(getTokenCreationDate(), Constants.TOKEN_EXPIRED_TERM);
     }
 
     public boolean isVenuesActual() {

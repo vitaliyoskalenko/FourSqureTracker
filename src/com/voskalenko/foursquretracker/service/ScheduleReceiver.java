@@ -54,7 +54,8 @@ public class ScheduleReceiver extends BroadcastReceiver {
             alarmManager.cancel(pIntent);
         } else {
             alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
-                    SystemClock.elapsedRealtime() + accountManager.getDetectTime(), getAccountManager().getDetectTime(), pIntent);
+                    SystemClock.elapsedRealtime() + 10000/*accountManager.getDetectTime()*/, 10000/* getAccountManager().getDetectTime()*/, pIntent);
         }
     }
 }
+

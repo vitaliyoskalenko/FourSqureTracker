@@ -78,39 +78,53 @@ public class ApiClient {
     private AccountManager getAccountManager() {
         return accountManager;
     }
+//    it's verify dialog callback that triggered when user has typed auth data
+    private final VerifyDialogCallback verifyDialogCallback = new VerifyDialogCallback() {
+
+        @Override
+        public void onSuccess(String verifyCode) {
+
+            TokenCallback callback = new TokenCallback() {
+
+                @Override
+                public void onSuccess(String token) {
+                    getAccountManager().setTokenCreationDate(System.currentTimeMillis());
+                    getAccountManager().setAccessToken(token);
+                }
+
+                @Override
+                public void onFail(String error, Exception e) {
+                    Logger.e(error, e);
+                }
+            };
+
+            getAccessToken(verifyCode, callback);
+        }
+
+        @Override
+        public void onFail(String error, Exception e) {
+
+        }
+    };
+
+//    it's triggered when user has made check in
+    private final AddCheckInCallback callback = new AddCheckInCallback() {
+        @Override
+        public void onSuccess(CheckIn checkIn) {
+            getAccountManager().setDisableDetectInCurrRadius(true);
+        }
+
+        @Override
+        public void onFail(String error, Exception e) {
+            Logger.e(error, e);
+        }
+    };
 
     @AfterInject
     void init() {
         token = getAccountManager().getAccessToken();
 
         final String verifyUrl = Constants.ROOT_URL + Constants.AUTH_URL + "&client_id=" + Constants.CLIENT_ID + "&redirect_uri=" + Constants.CALLBACK_URL;
-        final VerifyDialogCallback verifyDialogCallback = new VerifyDialogCallback() {
-
-            @Override
-            public void onSuccess(String verifyCode) {
-
-                TokenCallback callback = new TokenCallback() {
-
-                    @Override
-                    public void onSuccess(String token) {
-                        getAccountManager().setDateCreation(System.currentTimeMillis());
-                        getAccountManager().setAccessToken(token);
-                    }
-
-                    @Override
-                    public void onFail(String error, Exception e) {
-                        Logger.e(error, e);
-                    }
-                };
-
-                getAccessToken(verifyCode, callback);
-            }
-
-            @Override
-            public void onFail(String error, Exception e) {
-
-            }
-        };
 
         verifyDialog = VerifyDialog_.builder()
                 .verifyUrl(verifyUrl)
@@ -126,6 +140,7 @@ public class ApiClient {
         boolean isProposedExist = false;
         List<Venue> venueList = getAccountManager().getVenueList();
         int detectRadius = getAccountManager().getDetectRadius();
+
         for (Venue venue : venueList) {
             float distance = FourSqureTrackerHelper.distanceBetween(latitude, longitude,
                     venue.getLocation().getLatitude(), venue.getLocation().getLongitude());
@@ -135,6 +150,7 @@ public class ApiClient {
                 venue.setDistance(distance);
             }
         }
+
         if (isProposedExist) {
             getDbManager().addOrUpdVenues(venueList);
         }
@@ -144,21 +160,10 @@ public class ApiClient {
 
     public void CheckInProposedVenue(double latitude, double longitude) {
         if (getProposedVenues(latitude, longitude)) {
-            final AddCheckInCallback callback = new AddCheckInCallback() {
-                @Override
-                public void onSuccess(CheckIn checkIn) {
-                    getAccountManager().setDisableDetectInCurrRadius(true);
-                }
-
-                @Override
-                public void onFail(String error, Exception e) {
-                    Logger.e(error, e);
-                }
-            };
-
             Venue venue = new Venue();
             List<Venue> venueList = getAccountManager().getVenueList();
             venue = Collections.min(venueList);
+
             if (venue.getDistance() <= 200/*getAccountManager().getAutoCheckInRadius()*/)
                 addCheckIn(venue.getId(), callback);
         }
@@ -168,14 +173,14 @@ public class ApiClient {
         if (getProposedVenues(latitude, longitude)) {
 
             Intent notificationIntent = new Intent(context, ProposedVenuesActivity_.class);
-            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
             builder.setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.ic_notification)
-                     .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notification))
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notification))
                     .setTicker(context.getString(R.string.foursqure_suitable_venues))
                     .setWhen(System.currentTimeMillis())
                     .setContentTitle(context.getString(R.string.checkin_notif_title))
@@ -240,6 +245,4 @@ public class ApiClient {
             callback.onFail("Failed to like check in", e);
         }
     }
-
-
 }

@@ -42,6 +42,11 @@ public class ProposedVenuesAdapter extends CursorAdapter implements View.OnClick
     }
 
     @Override
+    public Object getItem(int position) {
+        return getView(position, null, null);
+    }
+
+    @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
         ProposedVenueView view = ProposedVenueView_.build(context);
         view.getBtnCheckIn().setOnClickListener(this);

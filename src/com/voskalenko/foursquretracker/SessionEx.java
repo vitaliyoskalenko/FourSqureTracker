@@ -21,7 +21,7 @@ import com.googlecode.androidannotations.annotations.sharedpreferences.SharedPre
 @SharedPref(value=SharedPref.Scope.APPLICATION_DEFAULT)
 public interface SessionEx {
 
-    long dateCreation();
+    long tokenCreationDate();
     long venuesUpdateDate();
     @DefaultString("")
     String accessToken();

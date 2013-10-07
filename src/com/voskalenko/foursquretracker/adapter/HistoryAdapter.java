@@ -7,7 +7,6 @@
  */
 
 package com.voskalenko.foursquretracker.adapter;
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
@@ -23,6 +22,7 @@ import com.voskalenko.foursquretracker.database.DatabaseManager;
 import com.voskalenko.foursquretracker.model.CheckInsHistory;
 import com.voskalenko.foursquretracker.views.CheckInsHistoryView;
 import com.voskalenko.foursquretracker.views.CheckInsHistoryView_;
+
 
 import java.util.List;
 
@@ -68,7 +68,6 @@ public class HistoryAdapter extends BaseAdapter implements Filterable {
         }
     };
 
-
     @Override
     public void notifyDataSetChanged() {
         super.notifyDataSetChanged();
@@ -94,7 +93,6 @@ public class HistoryAdapter extends BaseAdapter implements Filterable {
     public long getItemId(int position) {
         return 0;
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

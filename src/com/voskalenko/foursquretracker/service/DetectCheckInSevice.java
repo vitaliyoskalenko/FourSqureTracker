@@ -58,6 +58,10 @@ public class DetectCheckInSevice extends IntentService {
         super("DetectCheckInSvc_");
     }
 
+    public LocationManagerEx getCurrLocation() {
+        return currLocation;
+    }
+
     private DatabaseManager getDbManager() {
         return dbManager;
     }
@@ -70,6 +74,24 @@ public class DetectCheckInSevice extends IntentService {
         return accountManager;
     }
 
+//        Getting all the venues where the user has been
+        private final AllVenueCallback callback = new AllVenueCallback() {
+
+            @Override
+            public void onSuccess(List<Venue> venues) {
+                if (venues.size() > 0) {
+                    getAccountManager().setVenueList(venues);
+                    getDbManager().addOrUpdVenues(venues);
+                    doCheckIn();
+                }
+            }
+
+            @Override
+            public void onFail(String error, Exception e) {
+                Logger.e(error, e);
+            }
+        };
+
     @Override
     protected void onHandleIntent(Intent intent) {
 //        Specify which days of the service will be activated
@@ -81,7 +103,7 @@ public class DetectCheckInSevice extends IntentService {
         }
 
 //        Obtain the coordinates of the location service (GPS)
-        Location currentLocation = currLocation.getLocation();
+        Location currentLocation = getCurrLocation().getLocation();
         latitude = currentLocation.getLatitude();
         longitude = currentLocation.getLongitude();
         if (currentLocation != null) {
@@ -100,24 +122,6 @@ public class DetectCheckInSevice extends IntentService {
                 getAccountManager().setDisableDetectInCurrRadius(false);
             else return;
         }
-
-//        Getting all the venues where the user has been
-        AllVenueCallback callback = new AllVenueCallback() {
-
-            @Override
-            public void onSuccess(List<Venue> venues) {
-                if (venues.size() > 0) {
-                    getAccountManager().setVenueList(venues);
-                    getDbManager().addOrUpdVenues(venues);
-                    doCheckIn();
-                }
-            }
-
-            @Override
-            public void onFail(String error, Exception e) {
-                Logger.e(error, e);
-            }
-        };
 
 //        Set the latest location for the future comparison
         getAccountManager().setLastLocation(latitude, longitude);

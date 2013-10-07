@@ -11,6 +11,7 @@ package com.voskalenko.foursquretracker.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.googlecode.androidannotations.annotations.EViewGroup;
@@ -33,6 +34,9 @@ public class ProposedVenueView extends RelativeLayout {
     ImageButton btnCheckIn;
     @ViewById(R.id.btn_mute)
     ImageButton btnMute;
+    @ViewById(R.id.layout_venue_command)
+    LinearLayout commandLayout;
+
     private Context context;
     private NumberFormat nFormater;
 
@@ -66,6 +70,10 @@ public class ProposedVenueView extends RelativeLayout {
 
     public ImageButton getBtnMute() {
         return btnMute;
+    }
+
+    public LinearLayout getCommandLayout() {
+        return commandLayout;
     }
 
     public void setData(Venue venue) {

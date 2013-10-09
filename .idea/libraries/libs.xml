@@ -1,10 +1,17 @@
 <component name="libraryTable">
   <library name="libs">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/libs" />
+      <root url="jar://$PROJECT_DIR$/libs/android-support-v4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/androidannotations-api-2.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jackson-annotations-2.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jackson-core-2.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jackson-databind-2.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/ormlite-android-4.46.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/ormlite-core-4.46.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/spring-android-core-1.0.1.RELEASE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/spring-android-rest-template-1.0.1.RELEASE.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/libs" recursive="false" />
   </library>
 </component>

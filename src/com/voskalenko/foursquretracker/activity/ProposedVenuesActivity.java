@@ -6,7 +6,7 @@
  * and are its intellectual property
  */
 
-package com.voskalenko.foursquretracker.ui;
+package com.voskalenko.foursquretracker.activity;
 
 import android.app.Activity;
 import com.googlecode.androidannotations.annotations.AfterInject;

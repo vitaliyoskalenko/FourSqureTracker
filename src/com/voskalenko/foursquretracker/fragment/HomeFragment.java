@@ -6,7 +6,7 @@
  * and are its intellectual property
  */
 
-package com.voskalenko.foursquretracker.ui;
+package com.voskalenko.foursquretracker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +28,8 @@ public class HomeFragment extends BaseFragment {
     AccountManager accountManager;
     @ViewById(R.id.btn_switch_on)
     ToggleButton btnSwitchOn;
+/*    @SystemService
+    LocationManager locationManager;*/
 
     static final boolean FLAG_STOP = true;
     static final boolean FLAG_START = false;
@@ -39,42 +41,41 @@ public class HomeFragment extends BaseFragment {
     @AfterViews
     void initViews() {
         btnSwitchOn.setChecked(getAccountManager().getIsDetectSvcRunning());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         switchButtonDrawable();
-        if (getAccountManager().getIsDetectSvcRunning()) {
-            startOrStopSchedule(FLAG_STOP);
-        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!getAccountManager().isSessionActual())
+        if (!getAccountManager().isSessionActual()) {
             getApiClient().verify(getActivity());
+        }
     }
 
     @Click(R.id.btn_switch_on)
     void onClick() {
+        enableDetectService();
         switchButtonDrawable();
+    }
+
+
+    private void enableDetectService() {
+        getAccountManager().setIsDetectSvcRunning(btnSwitchOn.isChecked());
+
+        Intent intent = new Intent(getActivity(), ScheduleReceiver_.class);
+        getActivity().sendBroadcast(intent);
+
         Toast.makeText(getActivity(), btnSwitchOn.isChecked() ?
                 R.string.service_activated : R.string.service_deactivated, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getAccountManager().setIsDetectSvcRunning(btnSwitchOn.isChecked());
-        if (btnSwitchOn.isChecked()) {
-            startOrStopSchedule(FLAG_START);
-        }
-    }
-
-    private void startOrStopSchedule(boolean scheduleFlag) {
-        Intent intent = new Intent(getActivity(), ScheduleReceiver_.class);
-        intent.putExtra(ScheduleReceiver_.STOP_SCHEDULE, scheduleFlag);
-        getActivity().sendBroadcast(intent);
-    }
     private void switchButtonDrawable() {
-        btnSwitchOn.setBackgroundResource(btnSwitchOn.isChecked() ? R.drawable.checkinon : R.drawable.checkinoff);
+        btnSwitchOn.setText(btnSwitchOn.isChecked() ? R.string.service_is_turn_on : R.string.service_is_turn_off);
     }
 }

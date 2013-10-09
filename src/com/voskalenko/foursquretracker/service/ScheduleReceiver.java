@@ -29,10 +29,8 @@ import com.voskalenko.foursquretracker.AccountManager;
 @EReceiver
 public class ScheduleReceiver extends BroadcastReceiver {
 
-    public static final String STOP_SCHEDULE = "stop_schedule";
-
     @SystemService
-    static AlarmManager alarmManager;
+    AlarmManager alarmManager;
     @Bean
     AccountManager accountManager;
 
@@ -42,20 +40,21 @@ public class ScheduleReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
-        boolean stopSchedule = intent.getBooleanExtra(STOP_SCHEDULE, false);
-        scheduleDetect(ctx, stopSchedule);
+        scheduleDetect(ctx);
     }
 
-    public void scheduleDetect(Context ctx, boolean stopSchedule) {
-        Intent intent = new Intent(ctx, DetectCheckInSevice_.class);
-        PendingIntent pIntent = PendingIntent.getService(ctx, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    public void scheduleDetect(Context context) {
+        boolean startFlag = getAccountManager().getIsDetectSvcRunning();
 
-        if (stopSchedule) {
-            alarmManager.cancel(pIntent);
-        } else {
-            ctx.startService(intent);
+        Intent detectIntent = new Intent(context, RunService_.class);
+        PendingIntent pIntent = PendingIntent.getService(context, 0, detectIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (startFlag) {
+            context.startService(detectIntent);
             alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME,
                     SystemClock.elapsedRealtime() + accountManager.getDetectTime(), getAccountManager().getDetectTime(), pIntent);
+        } else {
+            alarmManager.cancel(pIntent);
         }
     }
 }

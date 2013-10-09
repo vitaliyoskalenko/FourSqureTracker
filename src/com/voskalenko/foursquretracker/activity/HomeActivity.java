@@ -6,12 +6,16 @@
  * and are its intellectual property
  */
 
-package com.voskalenko.foursquretracker.ui;
+package com.voskalenko.foursquretracker.activity;
 
 import com.googlecode.androidannotations.annotations.AfterInject;
 import com.googlecode.androidannotations.annotations.EActivity;
 import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.voskalenko.foursquretracker.R;
+import com.voskalenko.foursquretracker.fragment.HistoryFragment;
+import com.voskalenko.foursquretracker.fragment.HistoryFragment_;
+import com.voskalenko.foursquretracker.fragment.HomeFragment;
+import com.voskalenko.foursquretracker.fragment.HomeFragment_;
 
 
 @EActivity

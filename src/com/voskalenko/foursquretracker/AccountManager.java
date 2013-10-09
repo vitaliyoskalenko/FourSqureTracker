@@ -146,7 +146,11 @@ public class AccountManager {
     }
 
     public boolean isVenuesActual() {
-        return !dateExpired(getVenuesUpdateDate(), Constants.UPDATE_VENUES_TERM);
+        if (getObtainFreshVenueTerm() == 0) {
+            return false;
+        } else {
+            return !dateExpired(getVenuesUpdateDate(), getObtainFreshVenueTerm());
+        }
     }
 
     public void setIsDetectSvcRunning(boolean isRunning) {
@@ -166,7 +170,7 @@ public class AccountManager {
         setVenueList(getDbManager().getVenues());
     }
 
-    public boolean[] getScheduleDays() {
+    public boolean[] getScheduleTerm() {
         boolean[] scheduleDays = new boolean[7];
         switch (Integer.parseInt(getSession().scheduleTerm().get())) {
             case 0:
@@ -180,5 +184,13 @@ public class AccountManager {
                 break;
         }
         return scheduleDays;
+    }
+
+    public int getPreferableProvider() {
+        return Integer.parseInt(getSession().preferableProvider().get());
+    }
+
+    private int getObtainFreshVenueTerm() {
+        return Integer.parseInt(getSession().obtainFreshVenueTerm().get());
     }
 }

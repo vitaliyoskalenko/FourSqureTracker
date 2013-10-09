@@ -8,12 +8,20 @@
 
 package com.voskalenko.foursquretracker;
 
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import com.googlecode.androidannotations.annotations.AfterInject;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
+import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EBean;
+import com.googlecode.androidannotations.annotations.RootContext;
 import com.googlecode.androidannotations.annotations.SystemService;
 
 /**
@@ -26,50 +34,108 @@ import com.googlecode.androidannotations.annotations.SystemService;
 @EBean
 public class LocationManagerEx implements LocationListener {
 
+    public final static String ACTION_LOCATION_CHANGED = "action.location.changed";
+    public final static String LATITUDE = "latitude";
+    public final static String LONGITUDE = "longitude";
 
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
     private static final String TAG = LocationManagerEx.class.getSimpleName();
+    private static final int NOTIFICATION_ID = 2;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
+    private static final long MIN_TIME_BW_UPDATES = 0;
+    private static final long CONNECT_TIMEOUT_IN_MS = 60000;
 
-    private Location location;
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     @SystemService
     LocationManager locationManager;
+    @RootContext
+    Context context;
+    @Bean
+    AccountManager accountManager;
 
-    @AfterInject
-    public void init() {
+    public LocationManagerEx() {
+    }
+
+    public AccountManager getAccountManager() {
+        return accountManager;
+    }
+
+    public LocationManager getLocationManager() {
+        return locationManager;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+
+    enum Providers {
+        ALL_PROVIDER("ALL_PROVIDER"),
+        GPS(LocationManager.GPS_PROVIDER),
+        NETWORK(LocationManager.NETWORK_PROVIDER);
+
+        private String name;
+
+        private Providers(String s) {
+            name = s;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    public void turnOn(String failProvider) {
         try {
             boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-            if (isGPSEnabled)
-                getLocation(LocationManager.GPS_PROVIDER);
-            else if (location == null && isNetworkEnabled) {
-                getLocation(LocationManager.NETWORK_PROVIDER);
-            } else Logger.i(TAG + ": Misfortune of getting location");
+            int providerIndex = getAccountManager().getPreferableProvider();
+
+            if (providerIndex != Providers.ALL_PROVIDER.ordinal()) {
+                String provider = Providers.values()[providerIndex].getName();
+                if (provider.equals(LocationManager.GPS_PROVIDER) && !isGPSEnabled)
+                    toggleGPS();
+                enableProvider(provider);
+
+            } else {
+                if (!isGPSEnabled) {
+                    toggleGPS();
+                }
+                if (isGPSEnabled && !failProvider.equals(LocationManager.GPS_PROVIDER)) {
+                    enableProvider(LocationManager.GPS_PROVIDER);
+                } else if (isNetworkEnabled) {
+                    enableProvider(LocationManager.NETWORK_PROVIDER);
+                } else Logger.i(TAG + ": Misfortune of getting location");
+            }
         } catch (Exception e) {
             Logger.e(TAG + ": Get location error", e);
         }
     }
 
-    public void getLocation(String provider) throws Exception {
-        locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+    public void enableProvider(String provider) throws Exception {
+        getLocationManager().requestLocationUpdates(provider, MIN_TIME_BW_UPDATES, MIN_DISTANCE_CHANGE_FOR_UPDATES, this, Looper.getMainLooper());
 
-        if (locationManager != null) {
-            location = locationManager
-                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
+        final Handler removeHandler = new Handler(Looper.getMainLooper());
+        removeHandler.postDelayed(new Runnable() {
+            public void run() {
+                turnOff();
+            }
+        }, CONNECT_TIMEOUT_IN_MS);
     }
 
-    public Location getLocation() {
-        return location != null ? location : new Location("");
+    public void turnOff() {
+        locationManager.removeUpdates(this);
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        if (location != null) {
+            sendResponseIntent(location, location.getProvider());
+        }
+        turnOff();
     }
 
     @Override
@@ -82,5 +148,24 @@ public class LocationManagerEx implements LocationListener {
 
     @Override
     public void onProviderDisabled(String s) {
+    }
+
+    private void sendResponseIntent(Location location, String provider) {
+        if (location != null) {
+            Intent intent = new Intent(ACTION_LOCATION_CHANGED);
+            intent.putExtra(LATITUDE, location.getLatitude());
+            intent.putExtra(LONGITUDE, location.getLongitude());
+            FourSqureTrackerHelper.sendIntent(context, intent);
+        } else {
+            turnOn(provider);
+        }
+    }
+
+    private void toggleGPS() {
+
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        FourSqureTrackerHelper.sendNotification(context, intent, defaultSound, R.drawable.ic_notification, R.string.foursqure_needs_gps,
+                R.string.enable_gps, R.string.checkin_notif_text, NOTIFICATION_ID);
     }
 }

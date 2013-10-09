@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="ormlite-android-4.46">
+  <library name="google-play-services">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libs/ormlite-android-4.46.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/google-play-services.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

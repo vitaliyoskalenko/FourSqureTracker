@@ -6,7 +6,7 @@
                 android:entries="@array/detect_time_entries"
                 android:summary="@string/detect_time_summary"
                 android:entryValues="@array/detect_time_values"
-                android:defaultValue="10"
+                android:defaultValue="600000"
                 android:title="@string/detect_time_title" />
 
         <ListPreference

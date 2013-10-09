@@ -15,7 +15,7 @@
     <string name="detect_time_summary">Search service to be started for this time</string>
     <string name="pref_user_profile">User\'s options</string>
     <string name="token_expired_term">token expired term</string>
-    <string name= "detect_radius_summary">Search occur within this radius</string>
+    <string name="detect_radius_summary">Search occur within this radius</string>
     <string name="detect_radius_title">Detect radius</string>
     <string name="service_activated">Service has just activated</string>
     <string name="service_deactivated">Service has been deactivated</string>
@@ -38,6 +38,16 @@
     <string name="action_search">Search for place</string>
     <string name="action_clean">Clean history</string>
     <string name="clean_checkins_history">Do you want to clean up history?</string>
+    <string name="foursqure_needs_gps">FourSqure needs gps</string>
+    <string name="enable_gps">Please, enable gps for detecting</string>
+    <string name="provider_term_summary">In the list you can activate of preferable provider</string>
+    <string name="provider_term_title">Choose preferable location service</string>
+    <string name="obtain_venue_term_summary">Select the desired time interval when you want to update the venue list</string>
+    <string name="obtain_venue_term_title">You can choose venue refresh term</string>
+    <string name="additional_preferences">Additional preferences</string>
+    <string name="additional_preferences_summary">Different program settings</string>
+    <string name="service_is_turn_on">Service is turned on</string>
+    <string name="service_is_turn_off">Service is turned off</string>
 
     <string-array name="detect_time_entries">
         <item>10 min</item>
@@ -46,9 +56,9 @@
     </string-array>
 
     <string-array name="detect_time_values">
-        <item>10</item>
-        <item>20</item>
-        <item>30</item>
+        <item>600000</item>
+        <item>1200000</item>
+        <item>1800000</item>
     </string-array>
 
     <string-array name="detect_radius_entries">
@@ -87,5 +97,32 @@
         <item>3</item>
     </string-array>
 
+    <string-array name="provider_term_entries">
+        <item>both</item>
+        <item>gps</item>
+        <item>network</item>
+    </string-array>
+
+    <string-array name="provider_term_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="obtain_venue_term_entries">
+        <item>once daily</item>
+        <item>each 12 hours</item>
+        <item>each 6 hours</item>
+        <item>each 3 hours</item>
+        <item>every time</item>
+    </string-array>
+
+    <string-array name="obtain_venue_term_values">
+        <item>86400000</item>
+        <item>43200000</item>
+        <item>21600000</item>
+        <item>10800000</item>
+        <item>0</item>
+    </string-array>
 
 </resources>

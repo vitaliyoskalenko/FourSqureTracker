@@ -41,7 +41,7 @@ import com.voskalenko.foursquretracker.net.ApiClient;
 
 @EFragment(R.layout.dialog_proposed_venues_list)
 public class ProposedVenuesDialog extends DialogFragment
-        implements AdapterView.OnItemClickListener,LoaderManager.LoaderCallbacks<Cursor> {
+        implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     @Bean
     ProposedVenuesAdapter adapter;
@@ -89,7 +89,6 @@ public class ProposedVenuesDialog extends DialogFragment
         }
     };
 
-
     private final ProposedVenuesCallback proposedVenuesCallback = new ProposedVenuesCallback() {
 
         @Override
@@ -112,7 +111,6 @@ public class ProposedVenuesDialog extends DialogFragment
         public void onFail(String error, Exception e) {
         }
     };
-
 
     @AfterViews
     void init() {

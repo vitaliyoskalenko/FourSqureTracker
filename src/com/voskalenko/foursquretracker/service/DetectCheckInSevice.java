@@ -10,7 +10,6 @@ package com.voskalenko.foursquretracker.service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.location.Location;
 import android.location.LocationManager;
 import com.googlecode.androidannotations.annotations.Bean;
 import com.googlecode.androidannotations.annotations.EService;
@@ -39,8 +38,6 @@ import java.util.List;
 public class DetectCheckInSevice extends IntentService {
 
     @Bean
-    LocationManagerEx currLocation;
-    @Bean
     ApiClient apiClient;
     @Bean
     DatabaseManager dbManager;
@@ -49,17 +46,13 @@ public class DetectCheckInSevice extends IntentService {
     @SystemService
     LocationManager locationManager;
 
+    private static final String TAG = DetectCheckInSevice.class.getSimpleName();
+
     private double latitude;
     private double longitude;
 
-    private static final String TAG = DetectCheckInSevice.class.getSimpleName();
-
     public DetectCheckInSevice() {
         super("DetectCheckInSvc_");
-    }
-
-    public LocationManagerEx getCurrLocation() {
-        return currLocation;
     }
 
     private DatabaseManager getDbManager() {
@@ -96,20 +89,20 @@ public class DetectCheckInSevice extends IntentService {
     protected void onHandleIntent(Intent intent) {
 //        Specify which days of the service will be activated
         Calendar calendar = Calendar.getInstance();
-        boolean[] scheduleDays = getAccountManager().getScheduleDays();
+        boolean[] scheduleDays = getAccountManager().getScheduleTerm();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
         if (scheduleDays[day - 1]) {
             return;
         }
 
 //        Obtain the coordinates of the location service (GPS)
-        Location currentLocation = getCurrLocation().getLocation();
-        latitude = currentLocation.getLatitude();
-        longitude = currentLocation.getLongitude();
-        if (currentLocation != null) {
-            getAccountManager().setLastLocation(currentLocation.getLatitude(),
-                    currentLocation.getLongitude());
-        } else return;
+        if (!intent.hasExtra(LocationManagerEx.LATITUDE)) {
+            return;
+        }
+
+        latitude = intent.getDoubleExtra(LocationManagerEx.LATITUDE, 0);
+        longitude = intent.getDoubleExtra(LocationManagerEx.LONGITUDE, 0);
+        getAccountManager().setLastLocation(latitude, longitude);
 
 //        Block the launch until we leave from a given radius
         if (getAccountManager().getDisableDetectInCurrRadius()) {

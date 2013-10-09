@@ -6,7 +6,7 @@
  * and are its intellectual property
  */
 
-package com.voskalenko.foursquretracker.ui;
+package com.voskalenko.foursquretracker.fragment;
 
 import android.app.DialogFragment;
 import android.os.Bundle;

@@ -9,19 +9,15 @@
 package com.voskalenko.foursquretracker.net;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
 import com.googlecode.androidannotations.annotations.*;
 import com.googlecode.androidannotations.annotations.rest.RestService;
 import com.googlecode.androidannotations.api.Scope;
 import com.voskalenko.foursquretracker.*;
+import com.voskalenko.foursquretracker.activity.ProposedVenuesActivity_;
 import com.voskalenko.foursquretracker.callback.AddCheckInCallback;
 import com.voskalenko.foursquretracker.callback.AllVenueCallback;
 import com.voskalenko.foursquretracker.callback.TokenCallback;
@@ -31,12 +27,14 @@ import com.voskalenko.foursquretracker.dialog.VerifyDialog;
 import com.voskalenko.foursquretracker.dialog.VerifyDialog_;
 import com.voskalenko.foursquretracker.model.*;
 import com.voskalenko.foursquretracker.service.NetworkService;
-import com.voskalenko.foursquretracker.ui.ProposedVenuesActivity_;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * It's client for getting and sending of queries through Network Service
@@ -56,8 +54,6 @@ public class ApiClient {
     DatabaseManager dbManager;
     @Bean
     AccountManager accountManager;
-    @SystemService
-    NotificationManager notificationMng;
 
     private static final String TAG = ApiClient.class.getSimpleName();
     private static final int NOTIFICATION_ID = 1;
@@ -78,7 +74,8 @@ public class ApiClient {
     private AccountManager getAccountManager() {
         return accountManager;
     }
-//    it's verify dialog callback that triggered when user has typed auth data
+
+    //    it's verify dialog callback that triggered when user has typed auth data
     private final VerifyDialogCallback verifyDialogCallback = new VerifyDialogCallback() {
 
         @Override
@@ -107,7 +104,7 @@ public class ApiClient {
         }
     };
 
-//    it's triggered when user has made check in
+    //    it's triggered when user has made check in
     private final AddCheckInCallback callback = new AddCheckInCallback() {
         @Override
         public void onSuccess(CheckIn checkIn) {
@@ -160,9 +157,14 @@ public class ApiClient {
 
     public void CheckInProposedVenue(double latitude, double longitude) {
         if (getProposedVenues(latitude, longitude)) {
-            Venue venue = new Venue();
             List<Venue> venueList = getAccountManager().getVenueList();
-            venue = Collections.min(venueList);
+            List<Venue> venueListTemp = new ArrayList<Venue>();
+            for (Venue venue : venueList) {
+                if (venue.getProposed() == 1) {
+                    venueListTemp.add(venue);
+                }
+            }
+            Venue venue = Collections.min(venueListTemp);
 
             if (venue.getDistance() <= getAccountManager().getAutoCheckInRadius())
                 addCheckIn(venue.getId(), callback);
@@ -176,20 +178,8 @@ public class ApiClient {
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notification))
-                    .setTicker(context.getString(R.string.foursqure_suitable_venues))
-                    .setWhen(System.currentTimeMillis())
-                    .setContentTitle(context.getString(R.string.checkin_notif_title))
-                    .setLights(Color.GREEN, 1, 2)
-                    .setAutoCancel(true)
-                    .setSound(defaultSound)
-                    .setContentText(context.getString(R.string.checkin_notif_text));
-            notificationMng.cancel(NOTIFICATION_ID);
-            notificationMng.notify(NOTIFICATION_ID, builder.build());
+            FourSqureTrackerHelper.sendNotification(context, notificationIntent, defaultSound, R.drawable.ic_notification, R.string.foursqure_suitable_venues,
+                    R.string.checkin_notif_title, R.string.checkin_notif_text, NOTIFICATION_ID);
         }
     }
 

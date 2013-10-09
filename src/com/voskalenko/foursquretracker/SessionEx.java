@@ -8,6 +8,7 @@
 
 package com.voskalenko.foursquretracker;
 
+import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultBoolean;
 import com.googlecode.androidannotations.annotations.sharedpreferences.DefaultString;
 import com.googlecode.androidannotations.annotations.sharedpreferences.SharedPref;
 
@@ -31,9 +32,15 @@ public interface SessionEx {
     String detectRadius();
     boolean disableDetectInCurrRadius();
     String lastLocation();
+    @DefaultBoolean(false)
     boolean autoCheckIn();
     @DefaultString("" + Constants.DEFAULT_AUTO_CHECKIN_RADIUS)
     String autoCheckInRadius();
+    @DefaultString("" + Constants.SCHEDULE_TERM)
     String scheduleTerm();
     boolean isDetectSvcRunning();
+    @DefaultString("" + Constants.PREFERABLE_PROVIDER)
+    String preferableProvider();
+    @DefaultString("" + Constants.OBTAIN_FRESH_VENUES_TERM)
+    String obtainFreshVenueTerm();
 }

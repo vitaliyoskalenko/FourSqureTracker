@@ -6,7 +6,7 @@
  * and are its intellectual property
  */
 
-package com.voskalenko.foursquretracker.ui;
+package com.voskalenko.foursquretracker.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +52,15 @@ public class FourSqureTrackerPreference extends PreferenceActivity {
             addPreferencesFromResource(R.xml.schedule_preference_screen);
         }
     }
+
+    public static class AdditionalPreferencesFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.additional_preference_screen);
+        }
+    }
+
 
 
 

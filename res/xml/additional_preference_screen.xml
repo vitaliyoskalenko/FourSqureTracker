@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+            android:key="preferableProvider"
+            android:entries="@array/provider_term_entries"
+            android:summary="@string/provider_term_summary"
+            android:entryValues="@array/provider_term_values"
+            android:defaultValue="0"
+            android:title="@string/provider_term_title"/>
+
+    <ListPreference
+            android:key="obtainFreshVenueTerm"
+            android:entries="@array/obtain_venue_term_entries"
+            android:summary="@string/obtain_venue_term_summary"
+            android:entryValues="@array/obtain_venue_term_values"
+            android:defaultValue="86400000"
+            android:title="@string/obtain_venue_term_title"/>
+</PreferenceScreen>

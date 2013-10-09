@@ -3,21 +3,25 @@
 <preference-headers
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <header android:fragment="com.voskalenko.foursquretracker.ui.FourSqureTrackerPreference$SearchPreferencesFragment"
+    <header android:fragment="com.voskalenko.foursquretracker.activity.FourSqureTrackerPreference$SearchPreferencesFragment"
             android:icon="@drawable/ic_action_action_search"
             android:title="@string/search_preferences"
             android:summary="@string/search_preferences_summary" />
 
-    <header android:fragment="com.voskalenko.foursquretracker.ui.FourSqureTrackerPreference$AutoCheckInPreferencesFragment"
+    <header android:fragment="com.voskalenko.foursquretracker.activity.FourSqureTrackerPreference$AutoCheckInPreferencesFragment"
             android:icon="@drawable/ic_action_checkin"
             android:title="@string/auto_checkin_preferences"
             android:summary="@string/auto_checkin_preferences_summary" />
 
-    <header android:fragment="com.voskalenko.foursquretracker.ui.FourSqureTrackerPreference$SchedulePreferencesFragment"
+    <header android:fragment="com.voskalenko.foursquretracker.activity.FourSqureTrackerPreference$SchedulePreferencesFragment"
             android:icon="@drawable/ic_action_schedule"
             android:title="@string/schedule_preferences"
             android:summary="@string/schedule_preferences_summary" />
 
+    <header android:fragment="com.voskalenko.foursquretracker.activity.FourSqureTrackerPreference$AdditionalPreferencesFragment"
+            android:icon="@drawable/ic_action_additional"
+            android:title="@string/additional_preferences"
+            android:summary="@string/additional_preferences_summary" />
 
 
 </preference-headers>

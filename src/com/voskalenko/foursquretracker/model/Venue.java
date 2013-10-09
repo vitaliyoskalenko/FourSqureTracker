@@ -199,15 +199,10 @@ public class Venue implements Serializable, Parcelable, Comparable<Venue> {
 
     @Override
     public int compareTo(Venue venue) {
-//        if(getDistance() > venue.getDistance()) return -1;
-//        if(getDistance() == venue.getDistance()) return 0;
-//        return 1;
-        if (venue.getProposed() == 0 ||  getProposed() == 0)
+        if(getDistance() < venue.getDistance())
             return -1;
-        if (getDistance() > venue.getDistance())
-            return 1;
-        else if (getDistance() < venue.getDistance())
-            return -1;
+        else if (getDistance() > venue.getDistance())
+           return 1;
         return 0;
     }
 }

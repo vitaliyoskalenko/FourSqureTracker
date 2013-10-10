@@ -125,4 +125,9 @@
         <item>0</item>
     </string-array>
 
+    <string-array name="proposed_venue_group_title">
+        <item>nearby places</item>
+        <item>my places</item>
+    </string-array>
+
 </resources>

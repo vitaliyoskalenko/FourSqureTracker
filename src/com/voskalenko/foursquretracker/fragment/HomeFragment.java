@@ -10,6 +10,8 @@ package com.voskalenko.foursquretracker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.googlecode.androidannotations.annotations.*;
@@ -28,8 +30,6 @@ public class HomeFragment extends BaseFragment {
     AccountManager accountManager;
     @ViewById(R.id.btn_switch_on)
     ToggleButton btnSwitchOn;
-/*    @SystemService
-    LocationManager locationManager;*/
 
     static final boolean FLAG_STOP = true;
     static final boolean FLAG_START = false;
@@ -46,7 +46,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        switchButtonDrawable();
+        switchButtonTitle();
     }
 
     @Override
@@ -61,7 +61,9 @@ public class HomeFragment extends BaseFragment {
     @Click(R.id.btn_switch_on)
     void onClick() {
         enableDetectService();
-        switchButtonDrawable();
+        switchButtonTitle();
+        Animation shake = AnimationUtils.loadAnimation(getActivity(), R.xml.shake);
+        btnSwitchOn.setAnimation(shake);
     }
 
 
@@ -75,7 +77,7 @@ public class HomeFragment extends BaseFragment {
                 R.string.service_activated : R.string.service_deactivated, Toast.LENGTH_SHORT).show();
     }
 
-    private void switchButtonDrawable() {
+    private void switchButtonTitle() {
         btnSwitchOn.setText(btnSwitchOn.isChecked() ? R.string.service_is_turn_on : R.string.service_is_turn_off);
     }
 }

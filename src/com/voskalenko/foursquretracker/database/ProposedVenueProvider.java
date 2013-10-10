@@ -56,6 +56,7 @@ public class ProposedVenueProvider extends ContentProvider {
             case URI_PROPOSED_VENUE:
                 queryBuilder.setTables(Venue.TABLE_NAME);
                 queryBuilder.appendWhere(Venue.FIELD_MUTED + " = 0 and " + Venue.FIELD_PROPOSED + " = 1");
+                pSortorder = Venue.FIELD_DISTANCE;
                 break;
             default:
                 throw new UnsupportedOperationException();

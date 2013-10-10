@@ -24,6 +24,8 @@ public class BaseActivity extends Activity {
 
     public void replaceFragment(int conteinerId, Fragment fragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(android.R.animator.fade_in,
+                android.R.animator.fade_out);
         fragmentTransaction.replace(conteinerId, fragment);
         fragmentTransaction.commit();
     }

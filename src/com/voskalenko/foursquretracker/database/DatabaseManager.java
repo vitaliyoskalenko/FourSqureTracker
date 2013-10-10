@@ -45,7 +45,7 @@ public class DatabaseManager {
         List<CheckInsHistory> checkInsList = null;
         try {
             if (TextUtils.isEmpty(condition)) {
-            checkInsList = getDbHelper().getCheckInsHistoryDao().queryForAll();
+                checkInsList = getDbHelper().getCheckInsHistoryDao().queryForAll();
             } else {
                 checkInsList = getDbHelper().getCheckInsHistoryDao()
                         .queryBuilder().where().like("place", "%" + condition + "%").query();
@@ -65,10 +65,20 @@ public class DatabaseManager {
     }
 
 
-    public void addOrUpdVenues(List<Venue> venues) {
+    public void addVenues(List<Venue> venues) {
         try {
             for (Venue venue : venues) {
-                getDbHelper().getVenuesDao().createOrUpdate(venue);
+                getDbHelper().getVenuesDao().createIfNotExists(venue);
+            }
+        } catch (SQLException e) {
+            Logger.e(TAG + ": Failed to add twitter home lines: ", e);
+        }
+    }
+
+    public void updateVenues(List<Venue> venues) {
+        try {
+            for (Venue venue : venues) {
+                getDbHelper().getVenuesDao().update(venue);
             }
         } catch (SQLException e) {
             Logger.e(TAG + ": Failed to add twitter home lines: ", e);

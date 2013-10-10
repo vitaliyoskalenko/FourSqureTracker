@@ -9,7 +9,6 @@
 package com.voskalenko.foursquretracker;
 
 import android.app.ActivityManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -20,6 +19,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import com.googlecode.androidannotations.annotations.EBean;
 import com.googlecode.androidannotations.annotations.SystemService;
@@ -87,7 +87,7 @@ public class FourSqureTrackerHelper {
     public static void sendNotification(Context context, Intent intent, Uri defaultSound, int smallIcon, int ticker, int title, int contentText, int notificationId) {
         NotificationManager notificationMng = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent,  PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification.Builder builder = new Notification.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         builder.setContentIntent(pendingIntent)
                 .setSmallIcon(smallIcon)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), smallIcon))

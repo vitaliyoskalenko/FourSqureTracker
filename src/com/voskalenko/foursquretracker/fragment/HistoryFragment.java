@@ -19,7 +19,6 @@ import android.widget.SearchView;
 import com.googlecode.androidannotations.annotations.*;
 import com.voskalenko.foursquretracker.R;
 import com.voskalenko.foursquretracker.adapter.HistoryAdapter;
-import com.voskalenko.foursquretracker.fragment.BaseFragment;
 
 @EFragment(R.layout.fragment_history)
 @OptionsMenu(R.menu.fragment_history_menu)
@@ -32,6 +31,7 @@ public class HistoryFragment extends BaseFragment {
 
     @OptionsItem(R.id.action_clean)
     void cleanMenu() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.clean_checkins_history);
         builder.setNegativeButton(android.R.string.cancel, null);
@@ -40,6 +40,7 @@ public class HistoryFragment extends BaseFragment {
             public void onClick(DialogInterface dialog, int which) {
                 getDbManager().cleanCheckInsHistory();
                 adapter.notifyDataSetChanged();
+                getActivity().invalidateOptionsMenu();
             }
         }
         );
@@ -88,5 +89,13 @@ public class HistoryFragment extends BaseFragment {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (adapter != null) {
+            menu.setGroupVisible(R.id.group_history_menu, adapter.getCount() != 0);
+        }
     }
 }

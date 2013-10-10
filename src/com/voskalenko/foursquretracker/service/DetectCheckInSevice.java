@@ -73,8 +73,8 @@ public class DetectCheckInSevice extends IntentService {
             @Override
             public void onSuccess(List<Venue> venues) {
                 if (venues.size() > 0) {
-                    getAccountManager().setVenueList(venues);
-                    getDbManager().addOrUpdVenues(venues);
+                    getDbManager().addVenues(venues);
+                    getAccountManager().restoreSessionFromDB();
                     doCheckIn();
                 }
             }

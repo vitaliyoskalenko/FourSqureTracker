@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:id="@+id/proposed_item_group_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"/>
+
     <TextView
             android:id="@+id/txt_venue_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:padding="4dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/proposed_item_group_layout"
             android:layout_toLeftOf="@+id/btn_checkin"/>
 
     <TextView
@@ -26,8 +35,6 @@
             android:layout_toRightOf="@id/txt_city"/>
 
 
-
-
     <LinearLayout
             android:id="@+id/layout_venue_command"
             android:layout_width="wrap_content"
@@ -36,7 +43,7 @@
             android:layout_centerHorizontal="true"
             android:orientation="horizontal"
             android:padding="10dp"
-            android:visibility="gone" >
+            android:visibility="gone">
 
         <ImageButton
                 android:id="@+id/btn_checkin"
@@ -55,4 +62,6 @@
     </LinearLayout>
 
 
-</merge>
+
+
+</RelativeLayout>

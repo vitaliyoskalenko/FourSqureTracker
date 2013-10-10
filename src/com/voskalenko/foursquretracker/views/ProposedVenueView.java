@@ -24,6 +24,8 @@ import java.text.NumberFormat;
 @EViewGroup(R.layout.view_proposed_venue_item)
 public class ProposedVenueView extends RelativeLayout {
 
+    @ViewById(R.id.proposed_item_group_layout)
+    RelativeLayout groupLayout;
     @ViewById(R.id.txt_venue_name)
     TextView venueNameView;
     @ViewById(R.id.txt_city)
@@ -46,6 +48,14 @@ public class ProposedVenueView extends RelativeLayout {
         nFormater = NumberFormat.getInstance();
         nFormater.setMinimumFractionDigits(0);
         nFormater.setMaximumFractionDigits(3);
+    }
+
+    public RelativeLayout getGroupLayout() {
+        return groupLayout;
+    }
+
+    public void setGroupLayout(RelativeLayout groupLayout) {
+        this.groupLayout = groupLayout;
     }
 
     public ProposedVenueView(Context context, AttributeSet attrs) {

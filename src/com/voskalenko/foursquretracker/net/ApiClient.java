@@ -149,7 +149,7 @@ public class ApiClient {
         }
 
         if (isProposedExist) {
-            getDbManager().addOrUpdVenues(venueList);
+            getDbManager().updateVenues(venueList);
         }
 
         return isProposedExist;
